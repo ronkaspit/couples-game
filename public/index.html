@@ -9,265 +9,468 @@
     :root{
       --bg:#0f0c1a;--card:#1a1530;--card2:#221c3c;
       --a1:#e0517a;--a2:#9b5de5;--a3:#f7b731;--a4:#00c9a7;
-      --text:#f0ecff;--muted:#9986c8;--r:22px;
+      --text:#f0ecff;--muted:#9986c8;--r:20px;
     }
     html,body{height:100%;width:100%;background:var(--bg);color:var(--text);
       font-family:'Segoe UI','Arial Hebrew',Arial,sans-serif;overflow:hidden}
 
     /* PARTICLES */
     #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-    .pt{position:absolute;border-radius:50%;opacity:.15;animation:float linear infinite}
+    .pt{position:absolute;border-radius:50%;opacity:.13;animation:float linear infinite}
     @keyframes float{0%{transform:translateY(110vh) rotate(0);opacity:0}
-      10%{opacity:.15}90%{opacity:.15}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
+      10%{opacity:.13}90%{opacity:.13}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
 
     /* SCREENS */
     .screen{position:fixed;inset:0;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;padding:24px;
+      align-items:center;justify-content:flex-start;
+      overflow-y:auto;padding:20px 18px 30px;
       transition:opacity .35s ease,transform .35s ease;z-index:1}
-    .screen.hidden{opacity:0;pointer-events:none;transform:scale(.96)}
+    .screen.hidden{opacity:0;pointer-events:none;transform:scale(.97)}
+    .screen.center{justify-content:center}
 
-    /* ── SPLASH (home) ── */
-    #s-home{gap:0;text-align:center}
+    /* ══════════════════════════════
+       DASHBOARD
+    ══════════════════════════════ */
+    #s-dash{padding-top:24px}
 
-    .couple-photo-wrap{margin:0 auto 18px;position:relative;width:120px;height:120px}
-    .couple-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;object-position:center top;
-      border:3px solid transparent;display:block;
-      background:linear-gradient(var(--bg),var(--bg)) padding-box,
-                 linear-gradient(135deg,var(--a1),var(--a2)) border-box;
-      box-shadow:0 8px 32px rgba(224,81,122,.35)}
+    .dash-header{width:100%;max-width:400px;display:flex;align-items:center;
+      justify-content:space-between;margin-bottom:18px}
+    .dash-title{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.5px}
+    .online-pills{display:flex;gap:8px}
+    .online-pill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;
+      display:flex;align-items:center;gap:4px}
+    .pill-on{background:rgba(0,201,167,.15);color:var(--a4)}
+    .pill-off{background:rgba(255,255,255,.07);color:var(--muted)}
 
-    .title{font-size:36px;font-weight:900;line-height:1.15;margin-bottom:4px;
+    /* Couple photo + title */
+    .dash-photo-wrap{position:relative;width:100%;max-width:400px;
+      height:200px;border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+    .dash-photo{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+    .dash-photo-overlay{position:absolute;inset:0;
+      background:linear-gradient(to bottom, transparent 40%, rgba(10,8,24,.9));
+      display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+      padding-bottom:18px}
+    .dash-photo-fallback{width:100%;height:100%;background:var(--card);
+      display:flex;align-items:center;justify-content:center;font-size:60px}
+    .dash-name{font-size:24px;font-weight:900;
       background:linear-gradient(135deg,var(--a1),var(--a2));
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .sub{font-size:13px;color:var(--muted);margin-bottom:36px;line-height:1.6}
+    .dash-subtitle{font-size:12px;color:rgba(255,255,255,.55)}
 
-    /* Who are you buttons */
-    .who-label{font-size:13px;color:var(--muted);margin-bottom:14px;letter-spacing:.5px}
+    /* Points cards */
+    .points-row{display:flex;gap:12px;width:100%;max-width:400px;margin-bottom:12px}
+    .points-card{flex:1;background:var(--card);border-radius:var(--r);
+      padding:14px 12px;text-align:center;border:1.5px solid rgba(255,255,255,.07);
+      position:relative;overflow:hidden}
+    .points-card.ron-card{border-color:rgba(61,90,241,.35)}
+    .points-card.hadas-card{border-color:rgba(224,81,122,.35)}
+    .points-name{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px}
+    .points-num{font-size:34px;font-weight:900;line-height:1}
+    .points-label{font-size:10px;color:var(--muted);margin-top:2px}
+    .points-bar{height:3px;border-radius:3px;margin-top:8px;background:rgba(255,255,255,.08)}
+    .points-bar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+    .ron-card .points-bar-fill{background:linear-gradient(90deg,#3d5af1,#9b5de5)}
+    .hadas-card .points-bar-fill{background:linear-gradient(90deg,var(--a1),var(--a3))}
+    .top-emoji{font-size:11px;margin-top:6px;color:var(--muted)}
+
+    /* Stats row */
+    .stats-row{display:flex;gap:10px;width:100%;max-width:400px;margin-bottom:12px}
+    .stat-chip{flex:1;background:var(--card);border-radius:14px;
+      padding:10px 6px;text-align:center;border:1.5px solid rgba(255,255,255,.06)}
+    .stat-num{font-size:20px;font-weight:800}
+    .stat-lbl{font-size:10px;color:var(--muted);margin-top:1px}
+
+    /* Badges */
+    .badges-wrap{width:100%;max-width:400px;margin-bottom:14px}
+    .badges-title{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px}
+    .badges-grid{display:flex;flex-wrap:wrap;gap:8px}
+    .badge-chip{background:var(--card);border-radius:12px;padding:7px 12px;
+      display:flex;align-items:center;gap:6px;border:1.5px solid rgba(255,255,255,.07)}
+    .badge-chip.earned{border-color:rgba(247,183,49,.35);background:rgba(247,183,49,.07)}
+    .badge-chip.locked{opacity:.35}
+    .badge-icon{font-size:16px}
+    .badge-label{font-size:11px;font-weight:600}
+
+    /* Play button */
+    .btn-play{width:100%;max-width:400px;background:linear-gradient(135deg,var(--a1),var(--a2));
+      color:#fff;border:none;border-radius:50px;padding:18px;font-size:18px;
+      font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(224,81,122,.35);
+      transition:transform .15s;margin-top:4px;letter-spacing:.3px}
+    .btn-play:active{transform:scale(.97)}
+
+    /* ══════════════════════════════
+       WHO ARE YOU (player select)
+    ══════════════════════════════ */
+    #s-who{gap:0;text-align:center}
+    .who-photo{width:90px;height:90px;border-radius:50%;object-fit:cover;
+      object-position:center top;margin:0 auto 14px;
+      border:3px solid transparent;
+      background:linear-gradient(var(--bg),var(--bg)) padding-box,
+                 linear-gradient(135deg,var(--a1),var(--a2)) border-box}
+    .who-title{font-size:22px;font-weight:800;margin-bottom:4px}
+    .who-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
     .who-btns{display:flex;gap:14px;width:100%;max-width:300px}
-    .who-btn{flex:1;border:none;border-radius:20px;padding:20px 10px;
-      font-size:18px;font-weight:800;cursor:pointer;
-      transition:transform .15s,box-shadow .15s;
-      display:flex;flex-direction:column;align-items:center;gap:6px}
+    .who-btn{flex:1;border:none;border-radius:18px;padding:22px 10px;
+      font-size:17px;font-weight:800;cursor:pointer;
+      transition:transform .15s;display:flex;flex-direction:column;align-items:center;gap:5px}
     .who-btn:active{transform:scale(.95)}
-    .who-ron{background:linear-gradient(135deg,#3d5af1,#9b5de5);color:#fff;
+    .who-ron  {background:linear-gradient(135deg,#3d5af1,#9b5de5);color:#fff;
       box-shadow:0 8px 24px rgba(61,90,241,.35)}
-    .who-hadas{background:linear-gradient(135deg,#e0517a,#f7b731);color:#fff;
+    .who-hadas{background:linear-gradient(135deg,var(--a1),var(--a3));color:#fff;
       box-shadow:0 8px 24px rgba(224,81,122,.35)}
-    .who-btn-name{font-size:20px}
-    .who-btn-status{font-size:11px;opacity:.75;font-weight:500}
+    .who-status{font-size:11px;opacity:.75;font-weight:500}
 
-    /* ── CATEGORIES ── */
-    #s-cat{gap:12px}
-    .cat-header{text-align:center;margin-bottom:4px}
-    .cat-header-photo{width:44px;height:44px;border-radius:50%;object-fit:cover;
-      object-position:center top;margin:0 auto 8px;display:block;
-      border:2px solid rgba(255,255,255,.15)}
-    .cat-title-text{font-size:20px;font-weight:800}
-    .cat-sub{font-size:12px;color:var(--muted);margin-top:2px}
-    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:360px}
+    /* ══════════════════════════════
+       CATEGORIES
+    ══════════════════════════════ */
+    #s-cat{padding-top:20px}
+    .cat-top{width:100%;max-width:400px;text-align:center;margin-bottom:16px}
+    .cat-top-photo{width:40px;height:40px;border-radius:50%;object-fit:cover;
+      object-position:center top;margin:0 auto 8px;border:2px solid rgba(255,255,255,.15)}
+    .cat-top-title{font-size:20px;font-weight:800}
+    .cat-top-sub{font-size:12px;color:var(--muted);margin-top:2px}
+    .online-row-cat{display:flex;gap:8px;justify-content:center;margin-top:6px}
+    .odot{width:7px;height:7px;border-radius:50%;background:var(--muted);transition:background .3s}
+    .odot.on{background:var(--a4)}
+    .oname{font-size:11px;color:var(--muted);transition:color .3s}
+    .oname.on{color:var(--a4)}
+
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;width:100%;max-width:400px}
     .cat-card{background:var(--card);border:2px solid transparent;border-radius:18px;
-      padding:18px 10px;text-align:center;cursor:pointer;transition:transform .18s,box-shadow .18s}
+      padding:16px 10px;text-align:center;cursor:pointer;transition:transform .18s,box-shadow .18s}
     .cat-card:active{transform:scale(.95)}
-    .cat-p{border-color:rgba(224,81,122,.4)}.cat-m{border-color:rgba(0,201,167,.4)}
-    .cat-c{border-color:rgba(247,183,49,.4)}.cat-d{border-color:rgba(155,93,229,.4)}
-    .cat-l{border-color:rgba(255,159,67,.4);grid-column:1/-1;
-      display:flex;align-items:center;gap:14px;text-align:right;padding:14px}
-    .ci{font-size:34px;margin-bottom:7px}
-    .cat-l .ci{margin-bottom:0;flex-shrink:0}
-    .cat-l-text{flex:1}
-    .cn{font-size:13px;font-weight:700;margin-bottom:3px}
-    .cd{font-size:11px;color:var(--muted);line-height:1.4}
-    .cb{font-size:10px;margin-top:6px;padding:2px 8px;border-radius:20px;font-weight:600;display:inline-block}
-    .cat-p .cb{background:rgba(224,81,122,.18);color:var(--a1)}
-    .cat-m .cb{background:rgba(0,201,167,.18);color:var(--a4)}
-    .cat-c .cb{background:rgba(247,183,49,.18);color:var(--a3)}
-    .cat-d .cb{background:rgba(155,93,229,.18);color:var(--a2)}
-    .cat-l .cb{background:rgba(255,159,67,.18);color:#ff9f43}
+    .cc-p{border-color:rgba(224,81,122,.4)}.cc-m{border-color:rgba(0,201,167,.4)}
+    .cc-c{border-color:rgba(247,183,49,.4)}.cc-d{border-color:rgba(155,93,229,.4)}
+    .cc-l{border-color:rgba(255,159,67,.4)}.cc-b{border-color:rgba(255,71,87,.4)}
+    .cc-w{border-color:rgba(95,39,205,.4)}.cc-k{border-color:rgba(29,209,161,.4)}
+    .cc-r{border-color:rgba(253,150,68,.4)}.cc-mp{border-color:rgba(162,155,254,.4)}
+    /* Wide cards (full row) */
+    .cat-card.wide{grid-column:1/-1;display:flex;align-items:center;
+      gap:12px;text-align:right;padding:14px}
+    .cat-card.wide .ci{margin-bottom:0;flex-shrink:0;font-size:30px}
+    .cat-card.wide .ct{display:flex;flex-direction:column;flex:1}
+    .ci{font-size:32px;margin-bottom:6px}
+    .cn{font-size:13px;font-weight:700;margin-bottom:2px}
+    .cd{font-size:10px;color:var(--muted);line-height:1.4}
+    .cb{font-size:10px;margin-top:5px;padding:2px 8px;border-radius:20px;
+      font-weight:600;display:inline-block}
+    .cc-p .cb{background:rgba(224,81,122,.18);color:var(--a1)}
+    .cc-m .cb{background:rgba(0,201,167,.18);color:var(--a4)}
+    .cc-c .cb{background:rgba(247,183,49,.18);color:var(--a3)}
+    .cc-d .cb{background:rgba(155,93,229,.18);color:var(--a2)}
+    .cc-l .cb{background:rgba(255,159,67,.18);color:#ff9f43}
+    .cc-b .cb{background:rgba(255,71,87,.18);color:#ff4757}
+    .cc-w .cb{background:rgba(95,39,205,.18);color:#a29bfe}
+    .cc-k .cb{background:rgba(29,209,161,.18);color:#1dd1a1}
+    .cc-r .cb{background:rgba(253,150,68,.18);color:#fd9644}
+    .cc-mp .cb{background:rgba(162,155,254,.18);color:#a29bfe}
+    .cc-b .cn{color:#ff4757}
 
-    /* Online dots in header */
-    .online-row{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:6px}
-    .online-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:background .3s}
-    .online-dot.on{background:var(--a4)}
-    .online-name{font-size:11px;color:var(--muted)}
-    .online-name.on{color:var(--a4)}
-
-    /* ── GAME ── */
-    #s-game{gap:0;padding:14px}
-    .g-hdr{width:100%;max-width:400px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
-    .g-hdr-photo{width:32px;height:32px;border-radius:50%;object-fit:cover;
+    /* ══════════════════════════════
+       GAME
+    ══════════════════════════════ */
+    #s-game{padding-top:16px}
+    .g-hdr{width:100%;max-width:400px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+    .g-hdr-photo{width:30px;height:30px;border-radius:50%;object-fit:cover;
       object-position:center top;border:2px solid rgba(255,255,255,.15);flex-shrink:0}
-    .g-cat{font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;flex-shrink:0}
-    .g-prog-wrap{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+    .g-cat{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;flex-shrink:0}
+    .g-prog-wrap{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
     .g-prog{height:100%;border-radius:10px;transition:width .5s}
-    .g-count{font-size:12px;color:var(--muted);font-weight:600;flex-shrink:0}
+    .g-count{font-size:11px;color:var(--muted);font-weight:600;flex-shrink:0}
 
     .card-area{width:100%;max-width:400px}
-    .gcard{background:var(--card);border-radius:var(--r);padding:26px 22px 18px;
+    .gcard{background:var(--card);border-radius:var(--r);padding:24px 20px 18px;
       text-align:center;border:2px solid rgba(255,255,255,.07);
-      box-shadow:0 18px 55px rgba(0,0,0,.4);
+      box-shadow:0 16px 50px rgba(0,0,0,.4);
       animation:cardIn .38s cubic-bezier(.34,1.56,.64,1);
-      display:flex;flex-direction:column;align-items:center;gap:11px;
-      min-height:220px;justify-content:center}
-    @keyframes cardIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    .gcard-icon{font-size:40px}
-    .gcard-player{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px}
-    .gcard-text{font-size:18px;font-weight:600;line-height:1.55}
-    .gcard-tip{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5}
+      display:flex;flex-direction:column;align-items:center;gap:10px;
+      min-height:200px;justify-content:center}
+    @keyframes cardIn{from{opacity:0;transform:scale(.88) translateY(14px)}
+      to{opacity:1;transform:scale(1) translateY(0)}}
+    .gcard-icon{font-size:38px}
+    .gcard-player{font-size:11px;font-weight:700;padding:3px 11px;border-radius:20px}
+    .gcard-text{font-size:17px;font-weight:600;line-height:1.55}
+    .gcard-tip{font-size:11px;color:var(--muted);font-style:italic;line-height:1.5}
+
+    /* Pts live */
+    .pts-live{width:100%;max-width:400px;display:flex;justify-content:space-between;
+      margin-top:8px;padding:0 4px}
+    .pts-live-item{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700}
+    .pts-live-name{color:var(--muted)}
 
     /* Reactions */
-    .rx-wrap{width:100%;max-width:400px;margin-top:10px;display:flex;flex-direction:column;gap:8px}
-    .rx-row{background:var(--card);border-radius:15px;padding:10px 13px;
-      display:flex;align-items:center;gap:9px;border:1.5px solid rgba(255,255,255,.07);transition:border-color .3s}
+    .rx-wrap{width:100%;max-width:400px;margin-top:8px;display:flex;flex-direction:column;gap:7px}
+    .rx-row{background:var(--card);border-radius:14px;padding:9px 12px;
+      display:flex;align-items:center;gap:8px;border:1.5px solid rgba(255,255,255,.07);transition:border-color .3s}
     .rx-row.reacted{border-color:rgba(255,255,255,.22)}
-    .rx-name{font-size:12px;font-weight:700;color:var(--muted);min-width:42px;flex-shrink:0}
-    .rx-emojis{display:flex;gap:6px;flex:1;justify-content:center}
-    .rx-btn{font-size:20px;background:none;border:2.5px solid transparent;
-      border-radius:50%;width:38px;height:38px;cursor:pointer;
+    .rx-name{font-size:11px;font-weight:700;color:var(--muted);min-width:38px;flex-shrink:0}
+    .rx-emojis{display:flex;gap:5px;flex:1;justify-content:center}
+    .rx-btn{font-size:19px;background:none;border:2.5px solid transparent;
+      border-radius:50%;width:36px;height:36px;cursor:pointer;
       transition:transform .15s,border-color .15s,background .15s;
       display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .rx-btn:active{transform:scale(.86)}
     .rx-btn.sel{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.1);transform:scale(1.15)}
     .rx-btn.partner-sel{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2)}
-    .rx-chosen{font-size:20px;min-width:28px;text-align:center;opacity:0;transition:opacity .3s}
+    .rx-chosen{font-size:19px;min-width:26px;text-align:center;opacity:0;transition:opacity .3s}
     .rx-chosen.vis{opacity:1}
 
-    .turn-hint{font-size:11px;color:rgba(255,255,255,.2);margin-top:5px;text-align:center;height:15px}
+    .turn-hint{font-size:11px;color:rgba(255,255,255,.2);margin-top:4px;text-align:center;height:14px}
 
-    .g-actions{width:100%;max-width:400px;display:flex;gap:10px;margin-top:11px}
+    .g-actions{width:100%;max-width:400px;display:flex;gap:9px;margin-top:10px}
     .btn-skip{flex:1;background:rgba(255,255,255,.07);border:none;border-radius:50px;
-      color:var(--muted);padding:14px;font-size:14px;cursor:pointer;transition:background .15s}
-    .btn-next{flex:2;border:none;border-radius:50px;color:#fff;padding:14px 20px;
+      color:var(--muted);padding:13px;font-size:14px;cursor:pointer;transition:background .15s}
+    .btn-next{flex:2;border:none;border-radius:50px;color:#fff;padding:13px 18px;
       font-size:15px;font-weight:700;cursor:pointer;transition:transform .15s;
       box-shadow:0 6px 20px rgba(0,0,0,.3)}
     .btn-next:active{transform:scale(.97)}
 
-    /* ── END ── */
-    #s-end{text-align:center;gap:16px}
+    /* ══════════════════════════════
+       PHOTO MODE (זיכרון בהפתעה)
+    ══════════════════════════════ */
+    .photo-mode-card{width:100%;max-width:400px}
+    .photo-upload-area{background:var(--card);border-radius:var(--r);
+      border:2px dashed rgba(162,155,254,.5);padding:30px 20px;
+      text-align:center;cursor:pointer;transition:border-color .2s;
+      display:flex;flex-direction:column;align-items:center;gap:12px}
+    .photo-upload-area:hover{border-color:var(--a2)}
+    .photo-upload-icon{font-size:44px}
+    .photo-upload-title{font-size:17px;font-weight:700}
+    .photo-upload-sub{font-size:12px;color:var(--muted);line-height:1.5}
+    #photoUploadInput{display:none}
+
+    .photo-waiting-area{background:var(--card);border-radius:var(--r);
+      border:2px solid rgba(162,155,254,.3);padding:30px 20px;
+      text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;
+      animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{border-color:rgba(162,155,254,.3)}50%{border-color:rgba(162,155,254,.7)}}
+
+    .photo-reveal-area{background:var(--card);border-radius:var(--r);overflow:hidden;
+      border:2px solid rgba(162,155,254,.4)}
+    .photo-reveal-img{width:100%;max-height:260px;object-fit:cover;display:block}
+    .photo-reveal-prompt{padding:16px 18px;text-align:center}
+    .photo-reveal-who{font-size:12px;color:#a29bfe;font-weight:700;margin-bottom:6px}
+    .photo-reveal-text{font-size:16px;font-weight:600;line-height:1.5}
+
+    /* ══════════════════════════════
+       END SCREEN
+    ══════════════════════════════ */
+    #s-end{padding-top:24px}
     .end-photo{width:80px;height:80px;border-radius:50%;object-fit:cover;
-      object-position:center top;margin:0 auto;
+      object-position:center top;margin:0 auto 12px;
       border:3px solid transparent;
       background:linear-gradient(var(--bg),var(--bg)) padding-box,
                  linear-gradient(135deg,var(--a1),var(--a2)) border-box}
-    .end-title{font-size:26px;font-weight:900}
-    .end-msg{font-size:14px;color:var(--muted);line-height:1.7;max-width:280px}
-    .end-hist{width:100%;max-width:380px;max-height:200px;overflow-y:auto;
-      display:flex;flex-direction:column;gap:9px}
+    .end-title{font-size:26px;font-weight:900;text-align:center;width:100%;max-width:400px}
+    .end-msg{font-size:14px;color:var(--muted);line-height:1.7;text-align:center;
+      max-width:300px;margin:0 auto}
+    .end-new-badges{width:100%;max-width:400px;background:rgba(247,183,49,.08);
+      border:1.5px solid rgba(247,183,49,.25);border-radius:16px;padding:14px;
+      display:none}
+    .end-hist{width:100%;max-width:400px;display:flex;flex-direction:column;gap:8px}
     .hist-card{background:var(--card);border-radius:13px;padding:12px;
-      border:1.5px solid rgba(255,255,255,.07);text-align:right}
-    .hist-q{font-size:12px;font-weight:600;margin-bottom:7px;line-height:1.4}
+      border:1.5px solid rgba(255,255,255,.06);text-align:right}
+    .hist-q{font-size:12px;font-weight:600;margin-bottom:6px;line-height:1.4}
     .hist-rxs{display:flex;gap:12px;flex-wrap:wrap}
-    .hist-rx{display:flex;align-items:center;gap:5px}
+    .hist-rx{display:flex;align-items:center;gap:4px}
     .hist-rn{font-size:10px;color:var(--muted)}
-    .hist-re{font-size:17px}
-    .end-acts{display:flex;flex-direction:column;gap:10px;width:100%;max-width:260px}
+    .hist-re{font-size:16px}
+    .end-acts{display:flex;flex-direction:column;gap:9px;width:100%;max-width:380px;margin-top:4px}
     .btn-primary{background:linear-gradient(135deg,var(--a1),var(--a2));
-      color:#fff;border:none;border-radius:50px;padding:15px;font-size:16px;
+      color:#fff;border:none;border-radius:50px;padding:14px;font-size:15px;
       font-weight:700;cursor:pointer;width:100%;transition:transform .15s;
-      box-shadow:0 8px 24px rgba(224,81,122,.3)}
+      box-shadow:0 8px 24px rgba(224,81,122,.28)}
     .btn-primary:active{transform:scale(.97)}
     .btn-ghost{background:rgba(255,255,255,.08);border:none;border-radius:50px;
-      color:var(--muted);padding:13px;font-size:14px;cursor:pointer;width:100%}
+      color:var(--muted);padding:12px;font-size:14px;cursor:pointer;width:100%}
+
+    /* POINTS POP ANIMATION */
+    .pts-pop{position:fixed;pointer-events:none;font-size:15px;font-weight:800;
+      z-index:999;animation:ptsUp .9s ease-out forwards;color:var(--a3)}
+    @keyframes ptsUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-70px)}}
+
+    /* BADGE TOAST */
+    .badge-toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-120px);
+      background:rgba(247,183,49,.15);border:1.5px solid rgba(247,183,49,.4);
+      border-radius:50px;padding:10px 18px;font-size:13px;font-weight:700;
+      z-index:9999;transition:transform .4s;pointer-events:none;
+      white-space:nowrap;display:flex;align-items:center;gap:8px}
+    .badge-toast.show{transform:translateX(-50%) translateY(0)}
 
     /* TOAST */
-    .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(80px);
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
       background:var(--card2);border:1.5px solid rgba(255,255,255,.12);border-radius:50px;
-      padding:10px 20px;font-size:13px;font-weight:600;z-index:9999;
+      padding:10px 18px;font-size:12px;font-weight:600;z-index:9999;
       transition:transform .3s;pointer-events:none;white-space:nowrap}
     .toast.show{transform:translateX(-50%) translateY(0)}
 
-    /* OVERLAY (partner disconnected) */
+    /* OVERLAY */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;
       display:flex;align-items:center;justify-content:center;padding:24px}
     .overlay.hidden{display:none}
-    .overlay-box{background:var(--card);border-radius:var(--r);padding:30px 22px;
-      text-align:center;max-width:300px;width:100%;border:1.5px solid rgba(255,255,255,.1)}
+    .overlay-box{background:var(--card);border-radius:var(--r);padding:28px 20px;
+      text-align:center;max-width:300px;width:100%}
 
     /* heart float */
-    .hf{position:fixed;pointer-events:none;font-size:22px;z-index:999;
-      animation:hup 1.1s ease-out forwards}
-    @keyframes hup{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-110px) scale(1.5)}}
+    .hf{position:fixed;pointer-events:none;font-size:20px;z-index:999;
+      animation:hup 1s ease-out forwards}
+    @keyframes hup{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-100px) scale(1.4)}}
   </style>
 </head>
 <body>
-
 <div id="particles"></div>
 
-<!-- Partner offline overlay -->
+<!-- Overlays -->
 <div class="overlay hidden" id="overlayOff">
   <div class="overlay-box">
-    <div style="font-size:44px;margin-bottom:12px">📵</div>
-    <div style="font-size:20px;font-weight:800;margin-bottom:8px" id="overlayMsg">השותף התנתק</div>
-    <div style="font-size:13px;color:var(--muted);margin-bottom:20px">כשיתחבר שוב המשחק ימשיך</div>
+    <div style="font-size:40px;margin-bottom:10px">📵</div>
+    <div style="font-size:18px;font-weight:800;margin-bottom:6px">השותף התנתק</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:18px">כשיתחבר שוב המשחק ימשיך</div>
     <button class="btn-primary" onclick="location.reload()">רענון</button>
   </div>
 </div>
 
-<!-- ══ SPLASH ══ -->
-<div class="screen" id="s-home">
-  <div class="couple-photo-wrap">
-    <img class="couple-photo" src="/couple.jpg" alt="רון והדס"
-         onerror="this.style.display='none';document.getElementById('photoFallback').style.display='flex'"/>
-    <div id="photoFallback" style="display:none;width:120px;height:120px;border-radius:50%;
-      background:var(--card);border:3px solid rgba(155,93,229,.4);
-      align-items:center;justify-content:center;font-size:50px">💑</div>
+<div class="badge-toast" id="badgeToast">🏆 <span id="badgeToastText"></span></div>
+<div class="toast" id="toast"></div>
+
+<!-- ══ DASHBOARD ══ -->
+<div class="screen" id="s-dash">
+  <div class="dash-header">
+    <span class="dash-title">💑 המשחק של רון והדס</span>
+    <div class="online-pills">
+      <span class="online-pill pill-off" id="pill0">● רון</span>
+      <span class="online-pill pill-off" id="pill1">● הדס</span>
+    </div>
   </div>
 
-  <div class="title">אנחנו</div>
-  <div style="font-size:15px;font-weight:700;color:var(--muted);margin-bottom:4px;margin-top:-2px">המשחק של רון והדס</div>
-  <div class="sub">כל אחד בוחר את עצמו ומשחקים יחד 💫</div>
+  <div class="dash-photo-wrap">
+    <img class="dash-photo" src="/couple.jpg" alt=""
+         onerror="this.style.display='none';document.getElementById('dashFallback').style.display='flex'"/>
+    <div class="dash-photo-fallback" id="dashFallback" style="display:none">💑</div>
+    <div class="dash-photo-overlay">
+      <div class="dash-name">אנחנו</div>
+      <div class="dash-subtitle" id="dashSubtitle">טוען...</div>
+    </div>
+  </div>
 
-  <div class="who-label">מי אתה?</div>
+  <div class="points-row">
+    <div class="points-card ron-card">
+      <div class="points-name">רון</div>
+      <div class="points-num" id="ronPts">0</div>
+      <div class="points-label">נקודות</div>
+      <div class="top-emoji" id="ronTopEmoji"></div>
+      <div class="points-bar"><div class="points-bar-fill" id="ronBar" style="width:0%"></div></div>
+    </div>
+    <div class="points-card hadas-card">
+      <div class="points-name">הדס</div>
+      <div class="points-num" id="hadasPts">0</div>
+      <div class="points-label">נקודות</div>
+      <div class="top-emoji" id="hadasTopEmoji"></div>
+      <div class="points-bar"><div class="points-bar-fill" id="hadasBar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-chip">
+      <div class="stat-num" id="statCards">0</div>
+      <div class="stat-lbl">כרטיסים</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num" id="statCats">0</div>
+      <div class="stat-lbl">קטגוריות</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num" id="statSync">0</div>
+      <div class="stat-lbl">סינכרון</div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-lbl">סה"כ נק'</div>
+    </div>
+  </div>
+
+  <div class="badges-wrap">
+    <div class="badges-title">🏅 תגים</div>
+    <div class="badges-grid" id="badgesGrid"></div>
+  </div>
+
+  <button class="btn-play" onclick="show('s-who')">שחקו! 🎮</button>
+</div>
+
+<!-- ══ WHO ARE YOU ══ -->
+<div class="screen center hidden" id="s-who">
+  <img class="who-photo" src="/couple.jpg" alt=""
+       onerror="this.style.display='none'"/>
+  <div class="who-title">מי אתה/את?</div>
+  <div class="who-sub">בחר/י את עצמך כדי להמשיך</div>
   <div class="who-btns">
     <button class="who-btn who-ron" onclick="joinAs(0)">
-      <span class="who-btn-name">רון</span>
-      <span class="who-btn-status" id="ronStatus">טוען...</span>
+      <span>רון</span>
+      <span class="who-status" id="ronStatus">⚪ לא מחובר</span>
     </button>
     <button class="who-btn who-hadas" onclick="joinAs(1)">
-      <span class="who-btn-name">הדס</span>
-      <span class="who-btn-status" id="hadasStatus">טוען...</span>
+      <span>הדס</span>
+      <span class="who-status" id="hadasStatus">⚪ לא מחובר</span>
     </button>
   </div>
 </div>
 
 <!-- ══ CATEGORIES ══ -->
 <div class="screen hidden" id="s-cat">
-  <div class="cat-header">
-    <img class="cat-header-photo" src="/couple.jpg" alt=""
-         onerror="this.style.display='none'"/>
-    <div class="cat-title-text">בחרו קטגוריה</div>
-    <div class="cat-sub">כל אחד מכם יכול לבחור — שניכם תתחילו</div>
-    <div class="online-row">
-      <span class="online-dot" id="dot0"></span>
-      <span class="online-name" id="oname0">רון</span>
-      <span style="color:var(--muted);font-size:11px">•</span>
-      <span class="online-dot" id="dot1"></span>
-      <span class="online-name" id="oname1">הדס</span>
+  <div class="cat-top">
+    <img class="cat-top-photo" src="/couple.jpg" alt="" onerror="this.style.display='none'"/>
+    <div class="cat-top-title">בחרו קטגוריה</div>
+    <div class="cat-top-sub">כל אחד מכם יכול לבחור</div>
+    <div class="online-row-cat">
+      <span class="odot" id="dot0"></span><span class="oname" id="oname0">רון</span>
+      <span style="color:var(--muted);font-size:10px">•</span>
+      <span class="odot" id="dot1"></span><span class="oname" id="oname1">הדס</span>
     </div>
   </div>
 
   <div class="cat-grid">
-    <div class="cat-card cat-p" onclick="selectCat('personal')">
+    <div class="cat-card cc-p" onclick="selectCat('personal')">
       <div class="ci">💬</div><div class="cn">שאלות אישיות</div>
-      <div class="cd">שאלות שחושפות את הנשמה</div><span class="cb">15 שאלות</span>
+      <div class="cd">שאלות שחושפות את הנשמה</div><span class="cb">15</span>
     </div>
-    <div class="cat-card cat-m" onclick="selectCat('memories')">
+    <div class="cat-card cc-m" onclick="selectCat('memories')">
       <div class="ci">📸</div><div class="cn">זיכרונות</div>
-      <div class="cd">רגעים שעיצבו אתכם יחד</div><span class="cb">12 כרטיסים</span>
+      <div class="cd">רגעים שעיצבו אתכם יחד</div><span class="cb">12</span>
     </div>
-    <div class="cat-card cat-c" onclick="selectCat('creative')">
+    <div class="cat-card cc-c" onclick="selectCat('creative')">
       <div class="ci">🎨</div><div class="cn">יצירתיות</div>
-      <div class="cd">דמיון, פנטזיה וחלומות</div><span class="cb">13 כרטיסים</span>
+      <div class="cd">דמיון, פנטזיה וחלומות</div><span class="cb">13</span>
     </div>
-    <div class="cat-card cat-d" onclick="selectCat('dare')">
+    <div class="cat-card cc-d" onclick="selectCat('dare')">
       <div class="ci">🔥</div><div class="cn">אתגרים</div>
-      <div class="cd">מצחיק, קצת מביך, הרבה אהבה</div><span class="cb">14 אתגרים</span>
+      <div class="cd">מצחיק, קצת מביך, הרבה אהבה</div><span class="cb">14</span>
     </div>
-    <div class="cat-card cat-l" onclick="selectCat('life')">
-      <div class="ci">🎂</div>
-      <div class="cat-l-text">
-        <div class="cn">רגעי חיים</div>
-        <div class="cd">ימי הולדת, מסעדות, חופשות, אירועים</div>
-        <span class="cb">17 כרטיסים</span>
+    <div class="cat-card cc-l" onclick="selectCat('life')">
+      <div class="ci">🎂</div><div class="cn">רגעי חיים</div>
+      <div class="cd">ימי הולדת, מסעדות, חופשות</div><span class="cb">17</span>
+    </div>
+    <div class="cat-card cc-b" onclick="selectCat('bold')" style="border-width:2.5px">
+      <div class="ci">🌶️</div><div class="cn" style="color:#ff4757">נועז ואינטימי</div>
+      <div class="cd">רק לשניכם. בלי צנזורה.</div><span class="cb">15</span>
+    </div>
+    <div class="cat-card cc-w" onclick="selectCat('whatif')">
+      <div class="ci">💭</div><div class="cn">מה אם?</div>
+      <div class="cd">תרחישים, חלומות, אפשרויות</div><span class="cb">12</span>
+    </div>
+    <div class="cat-card cc-k" onclick="selectCat('knowyou')">
+      <div class="ci">🧠</div><div class="cn">אני מכיר/ה אותך</div>
+      <div class="cd">כמה באמת מכירים אחד את השני?</div><span class="cb">12</span>
+    </div>
+    <div class="cat-card cc-r" onclick="selectCat('roleplay')">
+      <div class="ci">🎭</div><div class="cn">תפקידים</div>
+      <div class="cd">שחקו סצנות יחד</div><span class="cb">8</span>
+    </div>
+    <div class="cat-card cc-mp wide" onclick="selectCat('memory_photo')">
+      <div class="ci">📷</div>
+      <div class="ct">
+        <div class="cn">זיכרון בהפתעה</div>
+        <div class="cd">כל אחד מעלה תמונה — השני מתאר את הרגע</div>
+        <span class="cb">6 סיבובים</span>
       </div>
     </div>
   </div>
@@ -282,13 +485,50 @@
     <span class="g-count" id="gCount"></span>
   </div>
 
-  <div class="card-area">
+  <!-- Regular card -->
+  <div class="card-area" id="regularCard">
     <div class="gcard" id="gcard">
       <div class="gcard-icon" id="gcIcon">💬</div>
       <div class="gcard-player" id="gcPlayer"></div>
       <div class="gcard-text" id="gcText"></div>
-      <div class="gcard-tip"  id="gcTip"></div>
+      <div class="gcard-tip" id="gcTip"></div>
     </div>
+  </div>
+
+  <!-- Photo mode card -->
+  <div class="photo-mode-card" id="photoCard" style="display:none">
+    <!-- Upload view (for the uploader) -->
+    <div id="photoUploadView" style="display:none">
+      <div class="photo-upload-area" onclick="document.getElementById('photoUploadInput').click()">
+        <div class="photo-upload-icon">📷</div>
+        <div class="photo-upload-title">העלה/י תמונה של רגע שלנו</div>
+        <div class="photo-upload-sub">תמונה שהשני צריך לתאר<br/>מהגלריה שלך</div>
+      </div>
+      <input type="file" id="photoUploadInput" accept="image/*" onchange="handlePhotoUpload(event)"/>
+    </div>
+    <!-- Waiting view (for the describer, before photo arrives) -->
+    <div id="photoWaitView" style="display:none">
+      <div class="photo-waiting-area">
+        <div style="font-size:40px">⏳</div>
+        <div style="font-size:16px;font-weight:700" id="photoWaitName">השותף בוחר תמונה...</div>
+        <div style="font-size:12px;color:var(--muted)">היא תופיע כאן מיד</div>
+      </div>
+    </div>
+    <!-- Reveal view (photo shown to both) -->
+    <div id="photoRevealView" style="display:none">
+      <div class="photo-reveal-area">
+        <img id="photoRevealImg" class="photo-reveal-img" src="" alt="זיכרון"/>
+        <div class="photo-reveal-prompt">
+          <div class="photo-reveal-who" id="photoRevealWho"></div>
+          <div class="photo-reveal-text">תאר/י את הרגע הזה — מתי היה? איפה? מה הרגשת?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pts-live">
+    <div class="pts-live-item"><span class="pts-live-name">רון</span> <span id="livePts0">0</span> ⭐</div>
+    <div class="pts-live-item">⭐ <span id="livePts1">0</span> <span class="pts-live-name">הדס</span></div>
   </div>
 
   <div class="rx-wrap" id="rxWrap">
@@ -306,7 +546,7 @@
 
   <div class="turn-hint" id="turnHint"></div>
   <div class="g-actions">
-    <button class="btn-skip" onclick="doSkip()">⏭ דלגו</button>
+    <button class="btn-skip" onclick="doSkip()">⏭</button>
     <button class="btn-next" id="btnNext" onclick="doNext()">הבא ❤️</button>
   </div>
 </div>
@@ -316,32 +556,56 @@
   <img class="end-photo" src="/couple.jpg" alt="" onerror="this.style.display='none'"/>
   <div class="end-title">כל הכבוד! 🎉</div>
   <div class="end-msg" id="endMsg"></div>
+
+  <div class="end-new-badges" id="endNewBadges">
+    <div style="font-size:13px;font-weight:700;color:var(--a3);margin-bottom:8px">🏅 תגים חדשים!</div>
+    <div id="endNewBadgesList" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+  </div>
+
   <div class="end-hist" id="endHist"></div>
+
   <div class="end-acts">
     <button class="btn-primary" onclick="doPlayAgain()">קטגוריה אחרת 🔁</button>
-    <button class="btn-ghost" onclick="show('s-home')">🏠 בית</button>
+    <button class="btn-ghost" onclick="show('s-dash')">📊 דשבורד</button>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script src="/socket.io/socket.io.js"></script>
 <script>
-const EMOJIS = ['❤️','🔥','😂','🥺','✨'];
-const NAMES  = ['רון','הדס'];
+const EMOJIS  = ['❤️','🔥','😂','🥺','✨'];
+const NAMES   = ['רון','הדס'];
+const POINTS  = {'❤️':5,'🔥':4,'✨':4,'😂':3,'🥺':2};
+const BADGE_DEFS = [
+  {id:'first',    icon:'🎮',label:'ביחד'},
+  {id:'romantic', icon:'💕',label:'רומנטי/ת'},
+  {id:'fire',     icon:'🔥',label:'בוער/ת'},
+  {id:'laughing', icon:'😂',label:'שמח/ה'},
+  {id:'brave',    icon:'🌶️',label:'נועז/ת'},
+  {id:'explorer', icon:'🗺️',label:'חוקר/ת'},
+  {id:'champion', icon:'👑',label:'אלוף/ה'},
+  {id:'hundred',  icon:'💯',label:'מושלם/ת'},
+  {id:'synced',   icon:'🌟',label:'מסונכרנ/ת'},
+  {id:'intimate', icon:'🫦',label:'אינטימי/ת'},
+];
 
 let myPIdx = -1;
 let catMeta = null;
 let curReactions = {};
+let curStats = { points:[0,0], reactionCounts:[{},{}], cardsPlayed:0,
+  bothReacted:0, categoriesPlayed:[], badges:[[],[]] };
+let isPhotoMode = false;
+let photoRound  = { uploaderIdx:-1, round:0, total:0 };
 
 // ══ SOCKET ══════════════════════════════
 const socket = io();
 
-socket.on('connect', () => updateStatuses(null));
+socket.on('connect', () => {});
 
 socket.on('joined', ({ playerIdx, state }) => {
   myPIdx = playerIdx;
+  applyStats(state.stats);
   applyOnline(state.online);
+  updateStatuses(state.online);
   if (state.cat && state.card) {
     applyGameState(state);
     show('s-game');
@@ -356,50 +620,60 @@ socket.on('online_update', ({ online }) => {
 });
 
 socket.on('game_state', (state) => {
-  catMeta = state.catMeta;
-  curReactions = state.reactions || {};
+  isPhotoMode = false;
+  applyStats(state.stats);
   applyGameState(state);
   show('s-game');
 });
 
-socket.on('reactions_update', ({ reactions }) => {
-  curReactions = reactions;
-  renderReactions(reactions);
+socket.on('photo_mode_start', ({ state }) => {
+  isPhotoMode = true;
+  applyStats(state.stats);
+  catMeta = state.catMeta;
+  setupPhotoRound(state.deck[state.cardIdx]);
+  setupGameHeader(catMeta, 1, state.total);
+  show('s-game');
 });
 
-socket.on('game_ended', ({ history }) => {
-  renderEnd(history);
+socket.on('photo_revealed', ({ photoData, uploaderIdx, uploaderName, describerName, round, total }) => {
+  setupGameHeader(catMeta, round, total);
+  showPhotoReveal(photoData, uploaderName, describerName);
+});
+
+socket.on('reactions_update', ({ reactions, stats, newBadges }) => {
+  curReactions = reactions;
+  applyStats(stats);
+  renderReactions(reactions);
+  if (newBadges && newBadges.badges.length) showBadgeToast(newBadges.badges);
+  NAMES.forEach((_,i) => {
+    document.getElementById('livePts'+i).textContent = stats.points[i];
+  });
+});
+
+socket.on('game_ended', ({ history, stats }) => {
+  applyStats(stats);
+  renderEnd(history, []);
   show('s-end');
 });
 
-socket.on('show_cats', () => show('s-cat'));
-
-socket.on('replaced', () => {
-  toast('התחברת ממכשיר אחר');
-  location.reload();
+socket.on('show_cats', ({ stats }) => {
+  if (stats) applyStats(stats);
+  isPhotoMode = false;
+  show('s-cat');
 });
 
-// ══ ACTIONS ══════════════════════════════
+socket.on('replaced', () => { toast('התחברת ממכשיר אחר'); location.reload(); });
+
+// ══ ACTIONS ════════════════════════════
 function joinAs(pi) {
   myPIdx = pi;
   socket.emit('join', { playerIdx: pi });
 }
 
-function selectCat(cat) {
-  socket.emit('select_cat', { cat });
-}
-
-function doNext() {
-  socket.emit('next_card');
-}
-
-function doSkip() {
-  socket.emit('next_card');
-}
-
-function doPlayAgain() {
-  socket.emit('back_to_cats');
-}
+function selectCat(cat) { socket.emit('select_cat', { cat }); }
+function doNext()  { socket.emit('next_card'); isPhotoMode = false; }
+function doSkip()  { socket.emit('next_card'); isPhotoMode = false; }
+function doPlayAgain() { socket.emit('back_to_cats'); }
 
 function react(emoji, pi) {
   if (pi !== myPIdx) return;
@@ -407,21 +681,82 @@ function react(emoji, pi) {
   curReactions[pi] = emoji;
   renderReactions(curReactions);
   floatHeart(document.getElementById('rxRow'+pi), emoji);
+  popPoints(document.getElementById('rxRow'+pi), POINTS[emoji]||1);
 }
 
-// ══ RENDER ════════════════════════════════
+// ══ PHOTO MODE ═════════════════════════
+function setupPhotoRound(roundData) {
+  if (!roundData) return;
+  photoRound = roundData;
+  const iAmUploader = roundData.uploaderIdx === myPIdx;
+
+  document.getElementById('regularCard').style.display  = 'none';
+  document.getElementById('photoCard').style.display    = 'block';
+  document.getElementById('photoUploadView').style.display  = iAmUploader ? 'block' : 'none';
+  document.getElementById('photoWaitView').style.display    = iAmUploader ? 'none' : 'block';
+  document.getElementById('photoRevealView').style.display  = 'none';
+
+  if (!iAmUploader) {
+    document.getElementById('photoWaitName').textContent =
+      NAMES[roundData.uploaderIdx] + ' בוחר/ת תמונה...';
+  }
+}
+
+function setupGameHeader(cat, cardIdx, total) {
+  if (!cat) return;
+  document.getElementById('gCat').textContent   = cat.label;
+  document.getElementById('gCat').style.cssText = `background:rgba(255,255,255,.08);color:${cat.color}`;
+  document.getElementById('gProg').style.background = cat.grad;
+  document.getElementById('gProg').style.width   = `${(cardIdx/total)*100}%`;
+  document.getElementById('gCount').textContent  = `${cardIdx}/${total}`;
+  document.getElementById('btnNext').style.background = cat.grad;
+}
+
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  // Resize client-side before sending
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const max = 900;
+      let w = img.width, h = img.height;
+      if (w > max) { h = h * max/w; w = max; }
+      if (h > max) { w = w * max/h; h = max; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const photoData = canvas.toDataURL('image/jpeg', 0.75);
+      socket.emit('upload_photo', { photoData });
+      showPhotoReveal(photoData, NAMES[myPIdx], NAMES[1-myPIdx]);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function showPhotoReveal(photoData, uploaderName, describerName) {
+  document.getElementById('photoUploadView').style.display  = 'none';
+  document.getElementById('photoWaitView').style.display    = 'none';
+  document.getElementById('photoRevealView').style.display  = 'block';
+  document.getElementById('photoRevealImg').src = photoData;
+  document.getElementById('photoRevealWho').textContent =
+    `📷 ${uploaderName} העלה/תה • ${describerName} מתאר/ת`;
+}
+
+// ══ RENDER ══════════════════════════════
 function applyGameState(state) {
   catMeta      = state.catMeta;
   curReactions = state.reactions || {};
 
-  document.getElementById('gCat').textContent   = catMeta.label;
-  document.getElementById('gCat').style.cssText = `background:rgba(255,255,255,.08);color:${catMeta.color}`;
-  document.getElementById('gProg').style.background = catMeta.grad;
-  document.getElementById('gProg').style.width  = `${((state.cardIdx+1)/state.total)*100}%`;
-  document.getElementById('gCount').textContent = `${state.cardIdx+1}/${state.total}`;
+  // Show regular card, hide photo mode
+  document.getElementById('regularCard').style.display = 'block';
+  document.getElementById('photoCard').style.display   = 'none';
 
-  document.getElementById('btnNext').style.background = catMeta.grad;
-  document.getElementById('btnNext').textContent      = state.cardIdx===state.total-1 ? 'סיום 🎉' : 'הבא ❤️';
+  setupGameHeader(catMeta, state.cardIdx + 1, state.total);
+  document.getElementById('btnNext').textContent = state.cardIdx===state.total-1 ? 'סיום 🎉' : 'הבא ❤️';
 
   const card = state.card;
   document.getElementById('gcIcon').textContent  = card.icon || catMeta.icon;
@@ -431,12 +766,15 @@ function applyGameState(state) {
   const turnName = NAMES[state.cardIdx % 2];
   const tag = document.getElementById('gcPlayer');
   tag.textContent = card.player
-    ? (card.player === 'שניהם' ? '👫 שניהם' : `👤 ${turnName}`)
+    ? (card.player==='שניהם' ? '👫 שניהם' : `👤 ${turnName}`)
     : `🎯 ${turnName}`;
   tag.style.cssText = `background:${catMeta.color}22;color:${catMeta.color};display:inline-block`;
 
   const gc = document.getElementById('gcard');
   gc.style.animation='none'; gc.offsetHeight; gc.style.animation='cardIn .38s cubic-bezier(.34,1.56,.64,1)';
+
+  // Live points
+  NAMES.forEach((_,i) => document.getElementById('livePts'+i).textContent = curStats.points[i]);
 
   buildReactionButtons();
   renderReactions(curReactions);
@@ -448,10 +786,9 @@ function buildReactionButtons() {
     wrap.innerHTML = '';
     EMOJIS.forEach(em => {
       const btn = document.createElement('button');
-      btn.className = 'rx-btn';
-      btn.textContent = em;
-      if (pi === myPIdx) btn.onclick = () => react(em, pi);
-      else { btn.style.opacity='.45'; btn.style.cursor='default'; }
+      btn.className = 'rx-btn'; btn.textContent = em;
+      if (pi===myPIdx) btn.onclick = () => react(em, pi);
+      else { btn.style.opacity='.4'; btn.style.cursor='default'; }
       wrap.appendChild(btn);
     });
   });
@@ -460,16 +797,16 @@ function buildReactionButtons() {
 function renderReactions(reactions) {
   [0,1].forEach(pi => {
     const chosen = reactions[pi];
-    document.getElementById('rxEmoji'+pi).querySelectorAll('.rx-btn').forEach(b => {
-      b.classList.toggle('sel',          b.textContent===chosen && pi===myPIdx);
-      b.classList.toggle('partner-sel',  b.textContent===chosen && pi!==myPIdx && !!chosen);
+    document.getElementById('rxEmoji'+pi).querySelectorAll('.rx-btn').forEach(b=>{
+      b.classList.toggle('sel',         b.textContent===chosen && pi===myPIdx);
+      b.classList.toggle('partner-sel', b.textContent===chosen && pi!==myPIdx && !!chosen);
     });
     const ch = document.getElementById('rxChosen'+pi);
-    ch.textContent = chosen||''; ch.classList.toggle('vis',!!chosen);
+    ch.textContent=chosen||''; ch.classList.toggle('vis',!!chosen);
     document.getElementById('rxRow'+pi).classList.toggle('reacted',!!chosen);
   });
   if (reactions[0] && reactions[1]) {
-    document.getElementById('turnHint').textContent = 'שניכם הגבתם ✨';
+    document.getElementById('turnHint').textContent='שניכם הגבתם ✨';
     document.getElementById('btnNext').style.transform='scale(1.04)';
     setTimeout(()=>document.getElementById('btnNext').style.transform='',350);
   } else {
@@ -477,13 +814,72 @@ function renderReactions(reactions) {
   }
 }
 
-function renderEnd(history) {
-  const msgs=['רון והדס — אתם מדהימים יחד 💕','כל שאלה מגלה עוד שכבה 🌸',
-    'מי שמשחק יחד — צומח יחד ✨','הקשר שלכם שווה כל שאלה 💫'];
+// ══ STATS + DASHBOARD ═══════════════════
+function applyStats(stats) {
+  if (!stats) return;
+  curStats = stats;
+  const p  = stats.points;
+  const max = Math.max(p[0], p[1], 1);
+
+  document.getElementById('ronPts').textContent   = p[0];
+  document.getElementById('hadasPts').textContent = p[1];
+  document.getElementById('ronBar').style.width   = `${p[0]/max*100}%`;
+  document.getElementById('hadasBar').style.width = `${p[1]/max*100}%`;
+  document.getElementById('ronTopEmoji').textContent   = topEmoji(stats.reactionCounts[0]);
+  document.getElementById('hadasTopEmoji').textContent = topEmoji(stats.reactionCounts[1]);
+
+  document.getElementById('statCards').textContent = stats.cardsPlayed;
+  document.getElementById('statCats').textContent  = (stats.categoriesPlayed||[]).length;
+  document.getElementById('statSync').textContent  = stats.bothReacted;
+  document.getElementById('statTotal').textContent = p[0]+p[1];
+
+  const total = p[0]+p[1];
+  document.getElementById('dashSubtitle').textContent =
+    total > 0 ? `${total} נקודות יחד • ${stats.cardsPlayed} כרטיסים` : 'בואו נתחיל לשחק!';
+
+  renderBadges(stats.badges);
+}
+
+function renderBadges(badges) {
+  const allBadges = new Set([...(badges[0]||[]), ...(badges[1]||[])]);
+  const grid = document.getElementById('badgesGrid');
+  grid.innerHTML = BADGE_DEFS.map(b => {
+    const earned = allBadges.has(b.id);
+    return `<div class="badge-chip ${earned?'earned':'locked'}">
+      <span class="badge-icon">${b.icon}</span>
+      <span class="badge-label">${b.label}</span>
+    </div>`;
+  }).join('');
+}
+
+function topEmoji(counts) {
+  if (!counts) return '';
+  const top = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
+  return top ? `אהוב: ${top[0]} ×${top[1]}` : '';
+}
+
+// ══ END SCREEN ══════════════════════════
+function renderEnd(history, newBadges) {
+  const msgs=[
+    'רון והדס — אתם מדהימים יחד 💕',
+    'כל שאלה מגלה עוד שכבה 🌸',
+    'מי שמשחק יחד — צומח יחד ✨',
+    'הקשר שלכם שווה כל שאלה 💫',
+  ];
   document.getElementById('endMsg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+
+  // New badges
+  if (newBadges && newBadges.length) {
+    const wrap = document.getElementById('endNewBadges');
+    wrap.style.display='block';
+    document.getElementById('endNewBadgesList').innerHTML = newBadges.map(id=>{
+      const b=BADGE_DEFS.find(x=>x.id===id);
+      return b ? `<div class="badge-chip earned"><span>${b.icon}</span><span class="badge-label">${b.label}</span></div>` : '';
+    }).join('');
+  }
+
   const hist = document.getElementById('endHist');
-  if (!history.length) { hist.innerHTML=''; return; }
-  hist.innerHTML = history.slice(-5).reverse().map(h => {
+  hist.innerHTML = history.slice(-5).reverse().map(h=>{
     const rxParts = Object.entries(h.reactions).map(([pi,em])=>
       `<div class="hist-rx"><span class="hist-rn">${NAMES[pi]}</span><span class="hist-re">${em}</span></div>`
     ).join('');
@@ -492,24 +888,25 @@ function renderEnd(history) {
   }).join('');
 }
 
-// ══ ONLINE STATUS ═════════════════════════
+// ══ ONLINE STATUS ════════════════════════
 function applyOnline(online) {
   if (!online) return;
-  [0,1].forEach(i => {
+  [0,1].forEach(i=>{
     const dot  = document.getElementById('dot'+i);
     const name = document.getElementById('oname'+i);
-    if (dot)  dot.classList.toggle('on', online[i]);
-    if (name) name.classList.toggle('on', online[i]);
+    const pill = document.getElementById('pill'+i);
+    if(dot)  dot.classList.toggle('on',  online[i]);
+    if(name) name.classList.toggle('on', online[i]);
+    if(pill){ pill.className='online-pill '+(online[i]?'pill-on':'pill-off');
+      pill.textContent='● '+NAMES[i]; }
   });
 }
 
 function updateStatuses(online) {
-  // Update splash buttons
-  ['ron','hadas'].forEach((n,i) => {
-    const el = document.getElementById(n+'Status');
-    if (!el) return;
-    if (!online) { el.textContent='מתחבר...'; return; }
-    el.textContent = online[i] ? '🟢 מחובר' : '⚪ לא מחובר';
+  if (!online) return;
+  [0,1].forEach(i=>{
+    const el = document.getElementById(i===0?'ronStatus':'hadasStatus');
+    if(el) el.textContent = online[i] ? '🟢 מחובר/ת' : '⚪ לא מחובר/ת';
   });
 }
 
@@ -517,6 +914,7 @@ function updateStatuses(online) {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
+  window.scrollTo(0,0);
 }
 
 let toastT=null;
@@ -526,17 +924,34 @@ function toast(msg){
   clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2400);
 }
 
+let badgeT=null;
+function showBadgeToast(badgeIds){
+  if(!badgeIds||!badgeIds.length) return;
+  const b=BADGE_DEFS.find(x=>x.id===badgeIds[0]);
+  if(!b) return;
+  document.getElementById('badgeToastText').textContent=`תג חדש: ${b.icon} ${b.label}`;
+  const el=document.getElementById('badgeToast');
+  el.classList.add('show');
+  clearTimeout(badgeT); badgeT=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
 function floatHeart(el,emoji){
   const rect=el.getBoundingClientRect();
   const e=document.createElement('div'); e.className='hf';
   e.textContent=emoji||'❤️';
-  e.style.left=(rect.left+rect.width/2-11)+'px';
-  e.style.top=(rect.top-8)+'px';
-  document.body.appendChild(e);
-  setTimeout(()=>e.remove(),1100);
+  e.style.left=(rect.left+rect.width/2-10)+'px'; e.style.top=(rect.top-6)+'px';
+  document.body.appendChild(e); setTimeout(()=>e.remove(),1000);
 }
 
-// Swipe on card
+function popPoints(el,pts){
+  const rect=el.getBoundingClientRect();
+  const e=document.createElement('div'); e.className='pts-pop';
+  e.textContent='+'+pts;
+  e.style.left=(rect.left+rect.width/2-16)+'px'; e.style.top=(rect.top-4)+'px';
+  document.body.appendChild(e); setTimeout(()=>e.remove(),900);
+}
+
+// Swipe on game card
 let tx=0;
 document.getElementById('gcard').addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX},{passive:true});
 document.getElementById('gcard').addEventListener('touchend',e=>{
