@@ -1,14 +1,19 @@
-const express  = require('express');
-const http     = require('http');
+const express    = require('express');
+const http       = require('http');
 const { Server } = require('socket.io');
-const path     = require('path');
-const os       = require('os');
+const path       = require('path');
+const os         = require('os');
 
 const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server, { cors: { origin: '*' } });
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ══════════════════════════════════════════
+//  PLAYERS (fixed — only Ron & Hadas)
+// ══════════════════════════════════════════
+const PLAYERS = ['רון', 'הדס'];
 
 // ══════════════════════════════════════════
 //  CARD DATA
@@ -96,23 +101,23 @@ const CATS = {
     label: 'רגעי חיים', icon: '🎂', color: '#ff9f43',
     grad: 'linear-gradient(135deg,#ff9f43,#ee5a24)',
     cards: [
-      {id:'l1',  text:'איפה חגגנו את יום ההולדת שלך בפעם האחרונה? מה היה הרגע הכי טוב שם?',           tip:'סגרו עיניים ותחזרו לאותו ערב', icon:'🎂'},
-      {id:'l2',  text:'מה הארוחה הכי בלתי נשכחת שאכלנו יחד? מה הזמנו?',                               tip:'המסעדה, השולחן, מה לבשתם — הכל', icon:'🍽️'},
-      {id:'l3',  text:'איזה חופשה או טיול הפתיע אתכם לטובה יותר מכל ציפייה?',                           tip:'אפילו אם הכל הלך הפוך — מה עשה אותו מיוחד?', icon:'✈️'},
-      {id:'l4',  text:'מה האירוע המשפחתי שזכרתם אחרים שנה לאחר מכן?',                                  tip:'חתונה, בר מצווה, ברית — מה תפס אתכם?', icon:'👨‍👩‍👧‍👦'},
-      {id:'l5',  text:'ספרו על ערב ספונטני לגמרי — בלי תכנון — שיצא מדהים.',                            tip:'מה התחיל אותו? לאן הגעתם בסוף?', icon:'🌃'},
-      {id:'l6',  text:'מה הרכישה הכי שמחה שקניתם יחד? האם חרטתם?',                                     tip:'גדולה או קטנה — מה הביאה לחייכם?', icon:'🛍️'},
-      {id:'l7',  text:'זכרו את הדירה או הבית הראשון שגרתם בו יחד. מה הדבר הכי מצחיק שקרה שם?',         tip:'ריח, רעש, שכנים, ריהוט — כל פרט עולה', icon:'🏠'},
-      {id:'l8',  text:'איזה סרט, סדרה או הצגה ראיתם יחד שעדיין מדברים עליה?',                           tip:'ולמה דווקא היא נשארה?', icon:'🎭'},
-      {id:'l9',  text:'מה החג שהכי נהנתם לחגוג יחד? מה עשה אותו מיוחד?',                               tip:'ראש השנה, פסח, חנוכה — מה ה"טקס" שלכם?', icon:'🕎'},
-      {id:'l10', text:'ספרו על פעם שאחד מכם עבר משהו קשה — וכיצד הייתם שם זה לזה.',                    tip:'לא צריך פרטים — רק התחושה', icon:'🤍'},
-      {id:'l11', text:'מה הקונצרט, האירוע או ההופעה הכי מדהימה שהייתם בה יחד?',                        tip:'אמן, מקום, מה הרגשתם שם', icon:'🎸'},
-      {id:'l12', text:'ספרו על יום הולדת שאחד מכם ארגן לשני — מה עבד ומה השתבש?',                      tip:'גם הסיפורים שהשתבשו הם הכי טובים', icon:'🎁'},
-      {id:'l13', text:'מה ההחלטה הכי גדולה שקיבלתם יחד? ואיך הגעתם אליה?',                             tip:'דירה, ילד, עבודה, מעבר — מה היה הרגע שאמרתם "כן"?', icon:'🔑'},
-      {id:'l14', text:'איזה מקום בעולם — שביקרתם בו — הייתם חוזרים אליו מחר אם יכולתם?',               tip:'ולמה דווקא שם?', icon:'🗺️'},
-      {id:'l15', text:'מה שנה שעברה לימדה אתכם על עצמכם כזוג?',                                        tip:'לא חייב להיות עמוק — גם תגלית קטנה שווה', icon:'📅'},
-      {id:'l16', text:'ספרו על ארוחת שישי או ארוחה משפחתית שתמיד תזכרו — מה היה שם?',                  tip:'מי ישב, מה בושל, מה נאמר', icon:'🕯️'},
-      {id:'l17', text:'מה הדבר הכי טיפש שעשיתם יחד ואחר כך צחקתם עליו שנים?',                         tip:'בנו, קנו, תכננו — מה לא עבד?', icon:'😅'},
+      {id:'l1',  text:'איפה חגגנו את יום ההולדת שלך בפעם האחרונה? מה היה הרגע הכי טוב שם?',   tip:'סגרו עיניים ותחזרו לאותו ערב', icon:'🎂'},
+      {id:'l2',  text:'מה הארוחה הכי בלתי נשכחת שאכלנו יחד? מה הזמנו?',                       tip:'המסעדה, השולחן, מה לבשתם — הכל', icon:'🍽️'},
+      {id:'l3',  text:'איזה חופשה או טיול הפתיע אתכם לטובה יותר מכל ציפייה?',                   tip:'אפילו אם הכל הלך הפוך — מה עשה אותו מיוחד?', icon:'✈️'},
+      {id:'l4',  text:'מה האירוע המשפחתי שדיברתם עליו שנה לאחר מכן?',                          tip:'חתונה, בר מצווה, ברית — מה תפס אתכם?', icon:'👨‍👩‍👧‍👦'},
+      {id:'l5',  text:'ספרו על ערב ספונטני לגמרי — בלי תכנון — שיצא מדהים.',                    tip:'מה התחיל אותו? לאן הגעתם בסוף?', icon:'🌃'},
+      {id:'l6',  text:'מה הרכישה הכי שמחה שקניתם יחד? האם חרטתם?',                             tip:'גדולה או קטנה — מה הביאה לחייכם?', icon:'🛍️'},
+      {id:'l7',  text:'זכרו את הדירה הראשונה שגרתם בה יחד. מה הדבר הכי מצחיק שקרה שם?',         tip:'ריח, רעש, שכנים, ריהוט — כל פרט עולה', icon:'🏠'},
+      {id:'l8',  text:'איזה סרט, סדרה או הצגה ראיתם יחד שעדיין מדברים עליה?',                   tip:'ולמה דווקא היא נשארה?', icon:'🎭'},
+      {id:'l9',  text:'מה החג שהכי נהנתם לחגוג יחד? מה עשה אותו מיוחד?',                       tip:'ראש השנה, פסח, חנוכה — מה ה"טקס" שלכם?', icon:'🕎'},
+      {id:'l10', text:'ספרו על פעם שאחד מכם עבר משהו קשה — וכיצד הייתם שם זה לזה.',            tip:'לא צריך פרטים — רק התחושה', icon:'🤍'},
+      {id:'l11', text:'מה הקונצרט, האירוע או ההופעה הכי מדהימה שהייתם בה יחד?',                tip:'אמן, מקום, מה הרגשתם שם', icon:'🎸'},
+      {id:'l12', text:'ספרו על יום הולדת שאחד מכם ארגן לשני — מה עבד ומה השתבש?',              tip:'גם הסיפורים שהשתבשו הם הכי טובים', icon:'🎁'},
+      {id:'l13', text:'מה ההחלטה הכי גדולה שקיבלתם יחד? ואיך הגעתם אליה?',                     tip:'דירה, ילד, עבודה, מעבר — מה היה הרגע שאמרתם "כן"?', icon:'🔑'},
+      {id:'l14', text:'איזה מקום בעולם — שביקרתם בו — הייתם חוזרים אליו מחר אם יכולתם?',       tip:'ולמה דווקא שם?', icon:'🗺️'},
+      {id:'l15', text:'מה שנה שעברה לימדה אתכם על עצמכם כזוג?',                                tip:'לא חייב להיות עמוק — גם תגלית קטנה שווה', icon:'📅'},
+      {id:'l16', text:'ספרו על ארוחת שישי או ארוחה משפחתית שתמיד תזכרו — מה היה שם?',          tip:'מי ישב, מה בושל, מה נאמר', icon:'🕯️'},
+      {id:'l17', text:'מה הדבר הכי טיפש שעשיתם יחד ואחר כך צחקתם עליו שנים?',                 tip:'בנו, קנו, תכננו — מה לא עבד?', icon:'😅'},
     ]
   }
 };
@@ -129,11 +134,6 @@ function shuffle(arr) {
   return a;
 }
 
-function generateCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-}
-
 function getLocalIP() {
   const nets = os.networkInterfaces();
   for (const name of Object.keys(nets)) {
@@ -145,24 +145,35 @@ function getLocalIP() {
 }
 
 // ══════════════════════════════════════════
-//  ROOMS
+//  ONE PERMANENT GAME (no room codes)
 // ══════════════════════════════════════════
-const rooms = {};
+const GAME = {
+  players:   [null, null],   // [רון-socket, הדס-socket]
+  cat:       null,
+  deck:      [],
+  cardIdx:   0,
+  reactions: {},
+  history:   [],
+};
 
-function roomState(room) {
-  const cat = room.cat ? CATS[room.cat] : null;
-  const card = (room.deck && room.deck[room.cardIdx]) || null;
+function gameState() {
+  const cat  = GAME.cat ? CATS[GAME.cat] : null;
+  const card = (GAME.deck && GAME.deck[GAME.cardIdx]) || null;
   return {
-    code:      room.code,
-    players:   room.players.map(p => ({ name: p.name, playerIdx: p.playerIdx })),
-    cat:       room.cat,
+    players:   PLAYERS,
+    cat:       GAME.cat,
     catMeta:   cat ? { label: cat.label, icon: cat.icon, color: cat.color, grad: cat.grad } : null,
     card,
-    cardIdx:   room.cardIdx,
-    total:     room.deck.length,
-    reactions: room.reactions,
-    history:   room.history,
+    cardIdx:   GAME.cardIdx,
+    total:     GAME.deck.length,
+    reactions: GAME.reactions,
+    history:   GAME.history,
+    online:    GAME.players.map(s => !!s),
   };
+}
+
+function broadcast(event, data) {
+  GAME.players.forEach(s => { if (s) s.emit(event, data); });
 }
 
 // ══════════════════════════════════════════
@@ -170,110 +181,69 @@ function roomState(room) {
 // ══════════════════════════════════════════
 io.on('connection', (socket) => {
 
-  // Create room ─────────────────────────────
-  socket.on('create_room', ({ name }) => {
-    let code;
-    do { code = generateCode(); } while (rooms[code]);
+  // Join as Ron (0) or Hadas (1) ───────────
+  socket.on('join', ({ playerIdx }) => {
+    // Disconnect previous session for same player if any
+    const prev = GAME.players[playerIdx];
+    if (prev && prev.id !== socket.id) prev.emit('replaced', {});
 
-    rooms[code] = {
-      code,
-      players:   [{ id: socket.id, name, playerIdx: 0 }],
-      cat:       null,
-      deck:      [],
-      cardIdx:   0,
-      reactions: {},
-      history:   [],
-    };
+    GAME.players[playerIdx] = socket;
+    socket.data.playerIdx   = playerIdx;
 
-    socket.join(code);
-    socket.data.code = code;
-    socket.data.playerIdx = 0;
-    socket.emit('room_created', { code, playerIdx: 0 });
-  });
-
-  // Join room ───────────────────────────────
-  socket.on('join_room', ({ code, name }) => {
-    const room = rooms[code.toUpperCase()];
-    if (!room) { socket.emit('error_msg', { msg: 'קוד לא נמצא 😕 בדקו שוב' }); return; }
-    if (room.players.length >= 2) { socket.emit('error_msg', { msg: 'החדר כבר מלא' }); return; }
-
-    room.players.push({ id: socket.id, name, playerIdx: 1 });
-    socket.join(code.toUpperCase());
-    socket.data.code = code.toUpperCase();
-    socket.data.playerIdx = 1;
-
-    // Notify joiner
-    socket.emit('room_joined', { code: code.toUpperCase(), playerIdx: 1, partnerName: room.players[0].name });
-    // Notify both that they're ready
-    io.to(code.toUpperCase()).emit('both_ready', {
-      p1: room.players[0].name,
-      p2: room.players[1].name,
-    });
+    socket.emit('joined', { playerIdx, state: gameState() });
+    broadcast('online_update', { online: GAME.players.map(s => !!s) });
   });
 
   // Select category ─────────────────────────
-  socket.on('select_cat', ({ code, cat }) => {
-    const room = rooms[code];
-    if (!room || !CATS[cat]) return;
-
-    room.cat     = cat;
-    room.deck    = shuffle(CATS[cat].cards);
-    room.cardIdx = 0;
-    room.reactions = {};
-
-    io.to(code).emit('game_state', roomState(room));
+  socket.on('select_cat', ({ cat }) => {
+    if (!CATS[cat]) return;
+    GAME.cat       = cat;
+    GAME.deck      = shuffle(CATS[cat].cards);
+    GAME.cardIdx   = 0;
+    GAME.reactions = {};
+    broadcast('game_state', gameState());
   });
 
   // Next card ───────────────────────────────
-  socket.on('next_card', ({ code }) => {
-    const room = rooms[code];
-    if (!room) return;
-
-    // Save reaction to history
-    const card = room.deck[room.cardIdx];
-    if (card && (room.reactions[0] || room.reactions[1])) {
-      room.history.push({
-        cat:   room.cat,
-        cardId: card.id,
-        text:  card.text,
-        reactions: { ...room.reactions },
-        players: room.players.map(p => p.name),
-        ts: Date.now(),
+  socket.on('next_card', () => {
+    const card = GAME.deck[GAME.cardIdx];
+    if (card && (GAME.reactions[0] || GAME.reactions[1])) {
+      GAME.history.push({
+        cat:       GAME.cat,
+        text:      card.text,
+        reactions: { ...GAME.reactions },
+        ts:        Date.now(),
       });
     }
-
-    if (room.cardIdx >= room.deck.length - 1) {
-      io.to(code).emit('game_ended', { history: room.history });
+    if (GAME.cardIdx >= GAME.deck.length - 1) {
+      broadcast('game_ended', { history: GAME.history });
       return;
     }
-
-    room.cardIdx++;
-    room.reactions = {};
-    io.to(code).emit('game_state', roomState(room));
+    GAME.cardIdx++;
+    GAME.reactions = {};
+    broadcast('game_state', gameState());
   });
 
   // React ───────────────────────────────────
-  socket.on('react', ({ code, emoji, playerIdx }) => {
-    const room = rooms[code];
-    if (!room) return;
-    room.reactions[playerIdx] = emoji;
-    io.to(code).emit('reactions_update', { reactions: room.reactions });
+  socket.on('react', ({ emoji, playerIdx }) => {
+    GAME.reactions[playerIdx] = emoji;
+    broadcast('reactions_update', { reactions: GAME.reactions });
   });
 
   // Back to categories ──────────────────────
-  socket.on('back_to_cats', ({ code }) => {
-    const room = rooms[code];
-    if (!room) return;
-    room.cat = null; room.deck = []; room.cardIdx = 0; room.reactions = {};
-    io.to(code).emit('show_cats', {});
+  socket.on('back_to_cats', () => {
+    GAME.cat = null; GAME.deck = []; GAME.cardIdx = 0; GAME.reactions = {};
+    broadcast('show_cats', {});
   });
 
   // Disconnect ──────────────────────────────
   socket.on('disconnect', () => {
-    const code = socket.data.code;
-    if (!code || !rooms[code]) return;
-    io.to(code).emit('partner_left', {});
-    delete rooms[code];
+    const pi = socket.data.playerIdx;
+    if (pi === undefined) return;
+    if (GAME.players[pi] && GAME.players[pi].id === socket.id) {
+      GAME.players[pi] = null;
+      broadcast('online_update', { online: GAME.players.map(s => !!s) });
+    }
   });
 });
 
@@ -284,12 +254,9 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
   const ip = getLocalIP();
   console.log('\n╔══════════════════════════════════════╗');
-  console.log('║   💑  אנחנו — משחק זוגי בלייב       ║');
+  console.log('║   💑  אנחנו — רון והדס               ║');
   console.log('╠══════════════════════════════════════╣');
   console.log(`║  📱  פתחו בטלפון:                    ║`);
   console.log(`║      http://${ip}:${PORT}        ║`);
-  console.log(`║                                      ║`);
-  console.log(`║  💻  מחשב: http://localhost:${PORT}      ║`);
   console.log('╚══════════════════════════════════════╝\n');
-  console.log('  לעצירה: Ctrl+C\n');
 });
