@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <title>אנחנו 💑</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    :root{
+      --bg:#0f0c1a;--card:#1a1530;--card2:#221c3c;
+      --a1:#e0517a;--a2:#9b5de5;--a3:#f7b731;--a4:#00c9a7;
+      --text:#f0ecff;--muted:#9986c8;--r:22px;
+    }
+    html,body{height:100%;width:100%;background:var(--bg);color:var(--text);
+      font-family:'Segoe UI','Arial Hebrew',Arial,sans-serif;overflow:hidden}
+
+    /* PARTICLES */
+    #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+    .pt{position:absolute;border-radius:50%;opacity:.15;animation:float linear infinite}
+    @keyframes float{0%{transform:translateY(110vh) rotate(0);opacity:0}
+      10%{opacity:.15}90%{opacity:.15}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
+
+    /* SCREENS */
+    .screen{position:fixed;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;padding:24px;
+      transition:opacity .35s ease,transform .35s ease;z-index:1}
+    .screen.hidden{opacity:0;pointer-events:none;transform:scale(.96)}
+
+    /* ── HOME ── */
+    #s-home{gap:0;text-align:center}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+    /* Couple photo */
+    .couple-photo-wrap{position:relative;width:110px;height:110px;margin:0 auto 14px;cursor:pointer}
+    .couple-photo{width:110px;height:110px;border-radius:50%;object-fit:cover;
+      border:3px solid transparent;
+      background:linear-gradient(var(--bg),var(--bg)) padding-box,
+                 linear-gradient(135deg,var(--a1),var(--a2)) border-box;
+      display:block}
+    .couple-photo-placeholder{width:110px;height:110px;border-radius:50%;
+      background:var(--card);border:2.5px dashed rgba(155,93,229,.4);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:4px;cursor:pointer;transition:border-color .2s}
+    .couple-photo-placeholder:hover{border-color:var(--a2)}
+    .couple-photo-placeholder span:first-child{font-size:30px}
+    .couple-photo-placeholder span:last-child{font-size:11px;color:var(--muted)}
+    .photo-edit-btn{position:absolute;bottom:2px;left:2px;background:var(--a2);
+      border:none;border-radius:50%;width:28px;height:28px;font-size:13px;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 8px rgba(0,0,0,.4)}
+    #photoInput{display:none}
+
+    .logo{font-size:48px;animation:pulse 2.5s ease-in-out infinite;margin-bottom:4px}
+    .title{font-size:40px;font-weight:900;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+    .sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+
+    /* Photo in lobby / game header */
+    .mini-photo{width:36px;height:36px;border-radius:50%;object-fit:cover;
+      border:2px solid rgba(155,93,229,.5);flex-shrink:0;display:none}
+    .inp{background:var(--card);border:2px solid rgba(155,93,229,.3);
+      border-radius:14px;padding:14px 18px;font-size:17px;color:var(--text);
+      width:100%;max-width:300px;text-align:center;outline:none;
+      transition:border-color .2s;margin-bottom:20px}
+    .inp:focus{border-color:var(--a2)}
+    .inp::placeholder{color:var(--muted)}
+    .home-btns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:300px}
+    .btn-primary{background:linear-gradient(135deg,var(--a1),var(--a2));
+      color:#fff;border:none;border-radius:50px;padding:16px;font-size:17px;
+      font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(224,81,122,.35);
+      transition:transform .15s,opacity .15s;width:100%}
+    .btn-primary:active{transform:scale(.97)}
+    .btn-secondary{background:var(--card);border:2px solid rgba(155,93,229,.35);
+      color:var(--text);border-radius:50px;padding:15px;font-size:16px;
+      font-weight:600;cursor:pointer;transition:border-color .2s;width:100%}
+    .btn-secondary:hover{border-color:var(--a2)}
+    .btn-ghost{background:none;border:none;color:var(--muted);font-size:14px;
+      cursor:pointer;padding:8px;text-decoration:underline}
+
+    /* ── JOIN ── */
+    #s-join{gap:16px;text-align:center}
+    .join-title{font-size:26px;font-weight:800;margin-bottom:4px}
+    .code-inp{background:var(--card);border:2px solid rgba(155,93,229,.4);
+      border-radius:18px;padding:18px;font-size:32px;font-weight:800;
+      color:var(--text);text-align:center;letter-spacing:8px;outline:none;
+      width:100%;max-width:260px;text-transform:uppercase;
+      transition:border-color .2s}
+    .code-inp:focus{border-color:var(--a2)}
+
+    /* ── LOBBY ── */
+    #s-lobby{gap:20px;text-align:center}
+    .lobby-code{font-size:52px;font-weight:900;letter-spacing:10px;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .lobby-label{font-size:14px;color:var(--muted);margin-top:-14px}
+    .lobby-url{font-size:13px;color:var(--a4);background:rgba(0,201,167,.1);
+      padding:8px 18px;border-radius:20px;word-break:break-all;text-align:center;
+      max-width:300px}
+    .waiting-dots{font-size:28px;animation:dots 1.5s infinite}
+    @keyframes dots{0%,100%{opacity:.3}50%{opacity:1}}
+    .player-chips{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .chip{padding:10px 20px;border-radius:50px;font-size:15px;font-weight:700;
+      display:flex;align-items:center;gap:8px}
+    .chip-joined{background:rgba(0,201,167,.15);color:var(--a4);border:1.5px solid rgba(0,201,167,.3)}
+    .chip-waiting{background:rgba(255,255,255,.07);color:var(--muted);border:1.5px solid rgba(255,255,255,.1)}
+
+    /* ── CATEGORIES ── */
+    #s-cat{gap:14px}
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;width:100%;max-width:360px}
+    .cat-card{background:var(--card);border:2px solid transparent;border-radius:var(--r);
+      padding:20px 10px;text-align:center;cursor:pointer;transition:transform .18s,box-shadow .18s}
+    .cat-card:active{transform:scale(.95)}
+    .cat-p{border-color:rgba(224,81,122,.4)}
+    .cat-m{border-color:rgba(0,201,167,.4)}
+    .cat-c{border-color:rgba(247,183,49,.4)}
+    .cat-d{border-color:rgba(155,93,229,.4)}
+    .cat-l{border-color:rgba(255,159,67,.4)}
+    /* 5th card spans full width */
+    .cat-card.cat-l{grid-column:1/-1;padding:16px 10px;
+      display:flex;align-items:center;gap:16px;text-align:right}
+    .cat-card.cat-l .ci{font-size:32px;margin-bottom:0;flex-shrink:0}
+    .cat-card.cat-l .cat-text{display:flex;flex-direction:column;flex:1}
+    .cat-l .cb{background:rgba(255,159,67,.18);color:#ff9f43}
+    .ci{font-size:36px;margin-bottom:8px}
+    .cn{font-size:14px;font-weight:700;margin-bottom:4px}
+    .cd{font-size:11px;color:var(--muted);line-height:1.4}
+    .cb{font-size:11px;margin-top:7px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block}
+    .cat-p .cb{background:rgba(224,81,122,.18);color:var(--a1)}
+    .cat-m .cb{background:rgba(0,201,167,.18);color:var(--a4)}
+    .cat-c .cb{background:rgba(247,183,49,.18);color:var(--a3)}
+    .cat-d .cb{background:rgba(155,93,229,.18);color:var(--a2)}
+
+    /* ── GAME ── */
+    #s-game{gap:0;padding:14px}
+    .g-hdr{width:100%;max-width:400px;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .g-cat{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;flex-shrink:0}
+    .g-prog-wrap{flex:1;height:5px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+    .g-prog{height:100%;border-radius:10px;transition:width .5s}
+    .g-count{font-size:12px;color:var(--muted);font-weight:600;flex-shrink:0}
+
+    .card-area{width:100%;max-width:400px}
+    .gcard{background:var(--card);border-radius:var(--r);padding:28px 22px 20px;
+      text-align:center;border:2px solid rgba(255,255,255,.07);
+      box-shadow:0 18px 55px rgba(0,0,0,.4);animation:cardIn .38s cubic-bezier(.34,1.56,.64,1);
+      display:flex;flex-direction:column;align-items:center;gap:12px;min-height:230px;justify-content:center}
+    @keyframes cardIn{from{opacity:0;transform:scale(.88) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .gcard-icon{font-size:42px}
+    .gcard-player{font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px}
+    .gcard-text{font-size:19px;font-weight:600;line-height:1.55}
+    .gcard-tip{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5}
+
+    /* Reactions */
+    .rx-wrap{width:100%;max-width:400px;margin-top:10px;display:flex;flex-direction:column;gap:9px}
+    .rx-row{background:var(--card);border-radius:16px;padding:11px 14px;
+      display:flex;align-items:center;gap:10px;border:1.5px solid rgba(255,255,255,.07);
+      transition:border-color .3s}
+    .rx-row.reacted{border-color:rgba(255,255,255,.22)}
+    .rx-name{font-size:12px;font-weight:700;color:var(--muted);min-width:54px;flex-shrink:0}
+    .rx-emojis{display:flex;gap:7px;flex:1;justify-content:center}
+    .rx-btn{font-size:21px;background:none;border:2.5px solid transparent;
+      border-radius:50%;width:40px;height:40px;cursor:pointer;
+      transition:transform .15s,border-color .15s,background .15s;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .rx-btn:active{transform:scale(.86)}
+    .rx-btn.sel{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.1);transform:scale(1.15)}
+    .rx-btn.partner-sel{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2)}
+    .rx-chosen{font-size:21px;min-width:32px;text-align:center;opacity:0;transition:opacity .3s}
+    .rx-chosen.vis{opacity:1}
+
+    /* Who can go next */
+    .turn-hint{font-size:12px;color:rgba(255,255,255,.22);margin-top:6px;text-align:center;height:16px}
+
+    .g-actions{width:100%;max-width:400px;display:flex;gap:10px;margin-top:12px}
+    .btn-skip{flex:1;background:rgba(255,255,255,.07);border:none;border-radius:50px;
+      color:var(--muted);padding:14px;font-size:15px;cursor:pointer;transition:background .15s}
+    .btn-next{flex:2;border:none;border-radius:50px;color:#fff;padding:14px 20px;
+      font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s;
+      box-shadow:0 6px 20px rgba(0,0,0,.3)}
+    .btn-next:active{transform:scale(.97)}
+
+    /* ── END ── */
+    #s-end{text-align:center;gap:16px}
+    .end-emoji{font-size:58px;animation:pulse 2s ease-in-out infinite}
+    .end-title{font-size:28px;font-weight:900}
+    .end-msg{font-size:14px;color:var(--muted);line-height:1.7;max-width:280px}
+    .end-hist{width:100%;max-width:380px;max-height:220px;overflow-y:auto;
+      display:flex;flex-direction:column;gap:10px}
+    .hist-card{background:var(--card);border-radius:14px;padding:14px;
+      border:1.5px solid rgba(255,255,255,.07);text-align:right}
+    .hist-q{font-size:13px;font-weight:600;margin-bottom:8px;line-height:1.4}
+    .hist-rxs{display:flex;gap:14px;flex-wrap:wrap}
+    .hist-rx{display:flex;align-items:center;gap:5px}
+    .hist-rn{font-size:11px;color:var(--muted)}
+    .hist-re{font-size:18px}
+    .end-acts{display:flex;flex-direction:column;gap:10px;width:100%;max-width:270px}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:var(--card2);border:1.5px solid rgba(255,255,255,.12);border-radius:50px;
+      padding:11px 22px;font-size:13px;font-weight:600;z-index:9999;
+      transition:transform .3s;pointer-events:none;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+
+    /* OVERLAY */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;
+      display:flex;align-items:center;justify-content:center;padding:24px}
+    .overlay.hidden{display:none}
+    .overlay-box{background:var(--card);border-radius:var(--r);padding:32px 24px;
+      text-align:center;max-width:320px;width:100%;border:1.5px solid rgba(255,255,255,.1)}
+    .overlay-icon{font-size:48px;margin-bottom:14px}
+    .overlay-title{font-size:22px;font-weight:800;margin-bottom:8px}
+    .overlay-msg{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+
+    /* CONNECTION badge */
+    .conn-badge{position:fixed;top:12px;left:12px;font-size:11px;padding:4px 10px;
+      border-radius:20px;z-index:100;font-weight:600;transition:all .3s}
+    .conn-on{background:rgba(0,201,167,.15);color:var(--a4);border:1px solid rgba(0,201,167,.3)}
+    .conn-off{background:rgba(224,81,122,.15);color:var(--a1);border:1px solid rgba(224,81,122,.3)}
+
+    /* heart float */
+    .hf{position:fixed;pointer-events:none;font-size:22px;z-index:999;
+      animation:hup 1.1s ease-out forwards}
+    @keyframes hup{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-110px) scale(1.5)}}
+
+    .err{color:var(--a1);font-size:13px;min-height:18px;text-align:center}
+    .back-link{font-size:13px;color:var(--muted);cursor:pointer;text-decoration:underline;margin-top:4px}
+  </style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- Connection badge -->
+<div class="conn-badge conn-off" id="connBadge">מתחבר...</div>
+
+<!-- Partner Left overlay -->
+<div class="overlay hidden" id="overlayLeft">
+  <div class="overlay-box">
+    <div class="overlay-icon">😔</div>
+    <div class="overlay-title">השותף התנתק</div>
+    <div class="overlay-msg">החיבור נותק. תתחילו חדר חדש כדי לשחק שוב.</div>
+    <button class="btn-primary" onclick="location.reload()">התחלה מחדש</button>
+  </div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div class="screen" id="s-home">
+
+  <!-- Couple photo -->
+  <div class="couple-photo-wrap" onclick="document.getElementById('photoInput').click()">
+    <div class="couple-photo-placeholder" id="photoPlaceholder">
+      <span>📷</span><span>הוסיפו תמונה</span>
+    </div>
+    <img class="couple-photo" id="couplePhoto" style="display:none" alt="אנחנו"/>
+    <button class="photo-edit-btn" id="photoEditBtn" style="display:none" onclick="event.stopPropagation();document.getElementById('photoInput').click()">✏️</button>
+  </div>
+  <input type="file" id="photoInput" accept="image/*" onchange="handlePhotoUpload(event)"/>
+
+  <div class="logo">💑</div>
+  <div class="title">אנחנו</div>
+  <div class="sub">משחק זוגי בלייב — כל אחד בטלפון שלו</div>
+  <input class="inp" id="myName" placeholder="מה השם שלך?" maxlength="14" autocomplete="off"/>
+  <div class="home-btns">
+    <button class="btn-primary" onclick="createRoom()">✨ פתחו חדר חדש</button>
+    <button class="btn-secondary" onclick="showJoin()">הכנסו לחדר קיים 🔑</button>
+  </div>
+</div>
+
+<!-- ══ JOIN ══ -->
+<div class="screen hidden" id="s-join">
+  <div class="join-title">הכנסו קוד חדר</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:20px">השותף יראה את הקוד על המסך שלו</div>
+  <input class="code-inp" id="codeInp" placeholder="ABCD" maxlength="4" autocomplete="off"
+         oninput="this.value=this.value.toUpperCase()"/>
+  <div class="err" id="joinErr"></div>
+  <button class="btn-primary" style="max-width:280px;margin-top:8px" onclick="joinRoom()">הצטרפו 🚀</button>
+  <div class="back-link" onclick="show('s-home')">← חזרה</div>
+</div>
+
+<!-- ══ LOBBY ══ -->
+<div class="screen hidden" id="s-lobby">
+  <!-- Mini couple photo in lobby -->
+  <img class="mini-photo" id="lobbyPhoto" alt=""/>
+  <div style="font-size:15px;color:var(--muted);margin-bottom:6px;margin-top:8px">קוד החדר</div>
+  <div class="lobby-code" id="lobbyCode">—</div>
+  <div class="lobby-label">השותף פותח את האפליקציה ומכניס את הקוד הזה</div>
+  <div class="lobby-url" id="lobbyUrl"></div>
+  <div class="player-chips" id="playerChips"></div>
+  <div class="waiting-dots" id="waitingDots">⏳</div>
+</div>
+
+<!-- ══ CATEGORIES ══ -->
+<div class="screen hidden" id="s-cat">
+  <div style="font-size:22px;font-weight:800;margin-bottom:4px">בחרו קטגוריה</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:20px" id="catSubtitle">מי שיבחר — שניכם תתחילו</div>
+  <div class="cat-grid">
+    <div class="cat-card cat-p" onclick="selectCat('personal')">
+      <div class="ci">💬</div><div class="cn">שאלות אישיות</div>
+      <div class="cd">שאלות שחושפות את הנשמה</div><span class="cb">15 שאלות</span>
+    </div>
+    <div class="cat-card cat-m" onclick="selectCat('memories')">
+      <div class="ci">📸</div><div class="cn">זיכרונות</div>
+      <div class="cd">רגעים שעיצבו אתכם יחד</div><span class="cb">12 כרטיסים</span>
+    </div>
+    <div class="cat-card cat-c" onclick="selectCat('creative')">
+      <div class="ci">🎨</div><div class="cn">יצירתיות</div>
+      <div class="cd">דמיון, פנטזיה וחלומות</div><span class="cb">13 כרטיסים</span>
+    </div>
+    <div class="cat-card cat-d" onclick="selectCat('dare')">
+      <div class="ci">🔥</div><div class="cn">אתגרים</div>
+      <div class="cd">מצחיק, קצת מביך, הרבה אהבה</div><span class="cb">14 אתגרים</span>
+    </div>
+    <div class="cat-card cat-l" onclick="selectCat('life')">
+      <div class="ci">🎂</div>
+      <div class="cat-text">
+        <div class="cn">רגעי חיים</div>
+        <div class="cd">ימי הולדת, מסעדות, חופשות, אירועים — הרגעים שבנו אתכם</div>
+        <span class="cb">17 כרטיסים</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div class="screen hidden" id="s-game">
+  <div class="g-hdr">
+    <img class="mini-photo" id="gamePhoto" alt=""/>
+    <span class="g-cat" id="gCat"></span>
+    <div class="g-prog-wrap"><div class="g-prog" id="gProg"></div></div>
+    <span class="g-count" id="gCount">1/15</span>
+  </div>
+
+  <div class="card-area">
+    <div class="gcard" id="gcard">
+      <div class="gcard-icon" id="gcIcon">💬</div>
+      <div class="gcard-player" id="gcPlayer"></div>
+      <div class="gcard-text" id="gcText"></div>
+      <div class="gcard-tip" id="gcTip"></div>
+    </div>
+  </div>
+
+  <div class="rx-wrap" id="rxWrap">
+    <div class="rx-row" id="rxRow0">
+      <div class="rx-name" id="rxName0">אני</div>
+      <div class="rx-emojis" id="rxEmoji0"></div>
+      <div class="rx-chosen" id="rxChosen0"></div>
+    </div>
+    <div class="rx-row" id="rxRow1">
+      <div class="rx-name" id="rxName1">הוא/היא</div>
+      <div class="rx-emojis" id="rxEmoji1"></div>
+      <div class="rx-chosen" id="rxChosen1"></div>
+    </div>
+  </div>
+
+  <div class="turn-hint" id="turnHint"></div>
+
+  <div class="g-actions">
+    <button class="btn-skip" onclick="doSkip()">⏭ דלגו</button>
+    <button class="btn-next" id="btnNext" onclick="doNext()">הבא ❤️</button>
+  </div>
+</div>
+
+<!-- ══ END ══ -->
+<div class="screen hidden" id="s-end">
+  <div class="end-emoji">🎉</div>
+  <div class="end-title">כל הכבוד!</div>
+  <div class="end-msg" id="endMsg"></div>
+  <div class="end-hist" id="endHist"></div>
+  <div class="end-acts">
+    <button class="btn-primary" onclick="doPlayAgain()">קטגוריה אחרת 🔁</button>
+    <button class="btn-secondary" onclick="location.reload()">סגור חדר 🏠</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+// ══ STATE ════════════════════════════════
+let myName    = '';
+let myRoom    = '';
+let myPIdx    = -1;          // 0 or 1
+let partnerName = '';
+let catMeta   = null;
+let curReactions = {};
+
+const EMOJIS = ['❤️','🔥','😂','🥺','✨'];
+
+// ══ SOCKET ════════════════════════════════
+const socket = io();
+
+socket.on('connect', () => {
+  setBadge(true);
+});
+socket.on('disconnect', () => {
+  setBadge(false);
+});
+
+// Room events
+socket.on('room_created', ({ code, playerIdx }) => {
+  myRoom = code; myPIdx = playerIdx;
+  showLobby(code, false);
+});
+
+socket.on('room_joined', ({ code, playerIdx, partnerName: pn }) => {
+  myRoom = code; myPIdx = playerIdx; partnerName = pn;
+});
+
+socket.on('both_ready', ({ p1, p2 }) => {
+  partnerName = myPIdx === 0 ? p2 : p1;
+  updateLobbyChips(p1, p2);
+  setTimeout(() => {
+    toast(`${partnerName} הצטרף/ה! 🎉`);
+    show('s-cat');
+    document.getElementById('catSubtitle').textContent = 'כל אחד מכם יכול לבחור — שניכם תתחילו';
+  }, 800);
+});
+
+socket.on('error_msg', ({ msg }) => {
+  document.getElementById('joinErr').textContent = msg;
+});
+
+// Game events
+socket.on('game_state', (state) => {
+  applyGameState(state);
+  show('s-game');
+});
+
+socket.on('reactions_update', ({ reactions }) => {
+  curReactions = reactions;
+  renderReactions(reactions);
+});
+
+socket.on('game_ended', ({ history }) => {
+  renderEnd(history);
+  show('s-end');
+});
+
+socket.on('show_cats', () => { show('s-cat'); });
+
+socket.on('partner_left', () => {
+  document.getElementById('overlayLeft').classList.remove('hidden');
+});
+
+// ══ ACTIONS ════════════════════════════════
+function createRoom() {
+  myName = document.getElementById('myName').value.trim();
+  if (!myName) { document.getElementById('myName').focus(); return; }
+  socket.emit('create_room', { name: myName });
+}
+
+function showJoin() {
+  myName = document.getElementById('myName').value.trim();
+  if (!myName) { document.getElementById('myName').focus(); return; }
+  document.getElementById('joinErr').textContent = '';
+  show('s-join');
+}
+
+function joinRoom() {
+  const code = document.getElementById('codeInp').value.trim().toUpperCase();
+  if (code.length < 4) { document.getElementById('joinErr').textContent = 'הכנסו 4 תווים'; return; }
+  socket.emit('join_room', { code, name: myName });
+}
+
+function selectCat(cat) {
+  socket.emit('select_cat', { code: myRoom, cat });
+}
+
+function doNext() {
+  socket.emit('next_card', { code: myRoom });
+}
+
+function doSkip() {
+  socket.emit('next_card', { code: myRoom });
+}
+
+function doPlayAgain() {
+  socket.emit('back_to_cats', { code: myRoom });
+}
+
+function react(emoji, pIdx) {
+  if (pIdx !== myPIdx) return; // can't react for partner
+  socket.emit('react', { code: myRoom, emoji, playerIdx: myPIdx });
+  curReactions[myPIdx] = emoji;
+  renderReactions(curReactions);
+  floatHeart(document.getElementById('rxRow'+myPIdx), emoji);
+}
+
+// ══ RENDER ════════════════════════════════
+function applyGameState(state) {
+  catMeta = state.catMeta;
+  curReactions = state.reactions || {};
+
+  // Header
+  document.getElementById('gCat').textContent = catMeta.label;
+  document.getElementById('gCat').style.cssText = `background:rgba(255,255,255,.08);color:${catMeta.color}`;
+  document.getElementById('gProg').style.background = catMeta.grad;
+  document.getElementById('gProg').style.width = `${((state.cardIdx+1)/state.total)*100}%`;
+  document.getElementById('gCount').textContent = `${state.cardIdx+1}/${state.total}`;
+
+  // Next button
+  document.getElementById('btnNext').style.background = catMeta.grad;
+  document.getElementById('btnNext').textContent = state.cardIdx===state.total-1 ? 'סיום 🎉' : 'הבא ❤️';
+
+  // Card
+  const card = state.card;
+  document.getElementById('gcIcon').textContent = card.icon || catMeta.icon;
+  document.getElementById('gcText').textContent = card.text;
+  document.getElementById('gcTip').textContent  = card.tip || '';
+
+  // Player tag — alternating
+  const names = state.players.map(p=>p.name);
+  const turnName = names[state.cardIdx % 2];
+  document.getElementById('gcPlayer').textContent = card.player
+    ? (card.player === 'שניהם' ? '👫 שניהם' : `👤 ${turnName}`)
+    : `🎯 ${turnName}`;
+  document.getElementById('gcPlayer').style.cssText = `background:${catMeta.color}22;color:${catMeta.color};display:inline-block`;
+
+  // Animate card
+  const gc = document.getElementById('gcard');
+  gc.style.animation='none'; gc.offsetHeight; gc.style.animation='cardIn .38s cubic-bezier(.34,1.56,.64,1)';
+
+  // Names in reaction rows
+  const p0name = names[0] || 'שותף 1';
+  const p1name = names[1] || 'שותף 2';
+  document.getElementById('rxName0').textContent = p0name;
+  document.getElementById('rxName1').textContent = p1name;
+
+  buildReactionButtons();
+  renderReactions(curReactions);
+}
+
+function buildReactionButtons() {
+  [0,1].forEach(pi => {
+    const wrap = document.getElementById('rxEmoji'+pi);
+    wrap.innerHTML = '';
+    EMOJIS.forEach(em => {
+      const btn = document.createElement('button');
+      btn.className='rx-btn'; btn.textContent=em;
+      if (pi === myPIdx) {
+        btn.onclick = () => react(em, pi);
+      } else {
+        btn.style.opacity = '.45';
+        btn.style.cursor  = 'default';
+      }
+      wrap.appendChild(btn);
+    });
+  });
+}
+
+function renderReactions(reactions) {
+  [0,1].forEach(pi => {
+    const chosen = reactions[pi];
+    const row = document.getElementById('rxRow'+pi);
+    const chosenEl = document.getElementById('rxChosen'+pi);
+    // Highlight selected button
+    const btns = document.getElementById('rxEmoji'+pi).querySelectorAll('.rx-btn');
+    btns.forEach(b => {
+      b.classList.toggle('sel', b.textContent === chosen && pi === myPIdx);
+      b.classList.toggle('partner-sel', b.textContent === chosen && pi !== myPIdx && !!chosen);
+    });
+    chosenEl.textContent = chosen || '';
+    chosenEl.classList.toggle('vis', !!chosen);
+    row.classList.toggle('reacted', !!chosen);
+  });
+
+  // Both reacted?
+  if (reactions[0] && reactions[1]) {
+    document.getElementById('turnHint').textContent = 'שניכם הגבתם ✨ המשיכו';
+    document.getElementById('btnNext').style.transform='scale(1.04)';
+    setTimeout(()=>document.getElementById('btnNext').style.transform='',350);
+  } else {
+    document.getElementById('turnHint').textContent = '';
+  }
+}
+
+function renderEnd(history) {
+  const msgs = [
+    `סיימתם את הסיבוב. אתם ממש מיוחדים יחד 💕`,
+    `כל שאלה מגלה עוד שכבה. המשיכו כך 🌸`,
+    `מי שמשחק יחד — צומח יחד ✨`,
+    `הקשר שלכם שווה כל שאלה וכל תגובה 💫`,
+  ];
+  document.getElementById('endMsg').textContent = msgs[Math.floor(Math.random()*msgs.length)];
+
+  const hist = document.getElementById('endHist');
+  if (!history.length) { hist.innerHTML=''; return; }
+  hist.innerHTML = history.slice(-6).reverse().map(h => {
+    const rxParts = Object.entries(h.reactions).map(([pi,em]) => {
+      const name = h.players?.[pi] || `שותף ${+pi+1}`;
+      return `<div class="hist-rx"><span class="hist-rn">${name}</span><span class="hist-re">${em}</span></div>`;
+    }).join('');
+    return `<div class="hist-card">
+      <div class="hist-q">${h.text}</div>
+      <div class="hist-rxs">${rxParts||'<span style="font-size:12px;color:var(--muted)">ללא תגובה</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══ LOBBY ════════════════════════════════
+function showLobby(code, asJoiner) {
+  document.getElementById('lobbyCode').textContent = code;
+  const url = `http://${location.hostname}:${location.port}`;
+  document.getElementById('lobbyUrl').textContent = url;
+  updateLobbyChips(myName, null);
+  document.getElementById('waitingDots').style.display = 'block';
+  show('s-lobby');
+}
+
+function updateLobbyChips(p1, p2) {
+  const wrap = document.getElementById('playerChips');
+  document.getElementById('waitingDots').style.display = p2 ? 'none' : 'block';
+  wrap.innerHTML = `
+    <div class="chip chip-joined">✅ ${p1}</div>
+    ${p2
+      ? `<div class="chip chip-joined">✅ ${p2}</div>`
+      : `<div class="chip chip-waiting">⏳ ממתין לשותף...</div>`}`;
+}
+
+// ══ PHOTO ════════════════════════════════
+const PHOTO_KEY = 'anavnu_photo';
+
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    try { localStorage.setItem(PHOTO_KEY, dataUrl); } catch(err) {}
+    applyPhoto(dataUrl);
+    toast('📸 התמונה נשמרה! ✨');
+  };
+  reader.readAsDataURL(file);
+  // Reset input so same file can be re-selected
+  event.target.value = '';
+}
+
+function applyPhoto(dataUrl) {
+  if (!dataUrl) return;
+  // Home screen
+  const img     = document.getElementById('couplePhoto');
+  const ph      = document.getElementById('photoPlaceholder');
+  const editBtn = document.getElementById('photoEditBtn');
+  img.src = dataUrl;
+  img.style.display = 'block';
+  ph.style.display  = 'none';
+  editBtn.style.display = 'flex';
+
+  // Mini photos (lobby + game header)
+  ['lobbyPhoto','gamePhoto'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.src = dataUrl; el.style.display = 'block'; }
+  });
+}
+
+function loadSavedPhoto() {
+  try {
+    const saved = localStorage.getItem(PHOTO_KEY);
+    if (saved) applyPhoto(saved);
+  } catch(e) {}
+}
+
+// ══ UTILS ════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function setBadge(on) {
+  const b = document.getElementById('connBadge');
+  b.textContent = on ? '🟢 מחובר' : '🔴 מנותק';
+  b.className = 'conn-badge ' + (on ? 'conn-on' : 'conn-off');
+}
+
+let toastT = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+function floatHeart(el, emoji) {
+  const rect = el.getBoundingClientRect();
+  const e = document.createElement('div');
+  e.className = 'hf';
+  e.textContent = emoji || ['❤️','💕','💫','✨'][Math.floor(Math.random()*4)];
+  e.style.left = (rect.left + rect.width/2 - 11) + 'px';
+  e.style.top  = (rect.top - 8) + 'px';
+  document.body.appendChild(e);
+  setTimeout(() => e.remove(), 1100);
+}
+
+// Load saved photo on startup
+loadSavedPhoto();
+
+// Particles
+(function(){
+  const w = document.getElementById('particles');
+  const cols = ['#e0517a','#9b5de5','#f7b731','#00c9a7'];
+  for (let i=0;i<14;i++){
+    const el = document.createElement('div'); el.className='pt';
+    const sz = 8+Math.random()*20;
+    el.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;
+      background:${cols[i%4]};animation-duration:${13+Math.random()*18}s;animation-delay:${Math.random()*12}s`;
+    w.appendChild(el);
+  }
+})();
+
+// Swipe on card
+let tx=0;
+document.getElementById('gcard').addEventListener('touchstart',e=>{tx=e.changedTouches[0].clientX},{passive:true});
+document.getElementById('gcard').addEventListener('touchend',e=>{
+  if (e.changedTouches[0].clientX - tx < -60) doNext();
+},{passive:true});
+</script>
+</body>
+</html>
