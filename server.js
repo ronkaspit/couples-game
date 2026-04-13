@@ -267,7 +267,42 @@ function checkBadges(pi) {
   return newB;
 }
 
+const FORFEITS = [
+  'תנו חיבוק של 20 שניות, בשקט גמור 🤗',
+  'ספרו 3 דברים שאתם אוהבים בשני — עכשיו 💛',
+  'הכינו קפה או תה אחד לשני מחר בבוקר ☕',
+  'שלחו הודעת אהבה עכשיו — כאילו אתם לא באותו חדר 💌',
+  'עיסוי ידיים — 5 דקות, בלי לבדוק טלפון 🙌',
+  'בחרו סרט לערב — הבחירה של השני 🎬',
+  'תרקדו ריקוד אחד ביחד, לכל שיר שיוצא 🕺💃',
+  'ספרו זכרון משותף אחד שאתם מאוד אוהבים 🌅',
+  'הכינו ארוחת בוקר יחד מחר 🥞',
+  'ציירו פורטרט אחד של השני — כמה שאפשר (לא חייב להיות יפה 😄) 🎨',
+];
+
+function warmthLabel(total) {
+  if (total === 0)   return { temp: '0°',  label: 'המשחק רק מתחיל… 🌱' };
+  if (total < 30)    return { temp: `${total}°`, label: 'הלב מתעורר 💛' };
+  if (total < 70)    return { temp: `${total}°`, label: 'נהיה חמים פה 🌡️' };
+  if (total < 130)   return { temp: `${total}°`, label: 'חמים מאוד! 🔥' };
+  if (total < 200)   return { temp: `${total}°`, label: 'ממש בוער 🔥🔥' };
+  return               { temp: `${total}°`, label: 'אש! אתם מדהימים 💗' };
+}
+
 function fullStats() {
+  const [p0, p1] = GAME.stats.points;
+  const total    = p0 + p1;
+  const warmth   = warmthLabel(total);
+
+  // Who has fewer points → gets a forfeit task
+  let behindIdx  = -1; // -1 = tied
+  if (p0 < p1)        behindIdx = 0;
+  else if (p1 < p0)   behindIdx = 1;
+
+  const forfeit = behindIdx >= 0
+    ? FORFEITS[Math.floor(Math.random() * FORFEITS.length)]
+    : null;
+
   return {
     points:          GAME.stats.points,
     reactionCounts:  GAME.stats.reactionCounts,
@@ -275,6 +310,10 @@ function fullStats() {
     bothReacted:     GAME.stats.bothReacted,
     categoriesPlayed: [...new Set(GAME.stats.categoriesPlayed)],
     badges:          GAME.stats.badges,
+    warmth,
+    behindIdx,
+    behindName:      behindIdx >= 0 ? PLAYERS[behindIdx] : null,
+    forfeit,
   };
 }
 

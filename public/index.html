@@ -77,25 +77,32 @@
       margin-bottom:4px}
     .dash-sub{font-size:12px;color:rgba(255,255,255,.5);text-align:center}
 
-    /* VS row */
-    .vs-row{width:100%;max-width:460px;display:flex;align-items:center;
-      gap:10px;padding:16px 0 4px}
-    .vs-card{flex:1;background:var(--card);border-radius:var(--r);padding:14px 12px;
-      display:flex;flex-direction:column;align-items:center;gap:4px;
-      border:1.5px solid rgba(255,255,255,.06)}
-    .vs-card.ron-card{border-color:rgba(224,81,122,.25)}
-    .vs-card.hadas-card{border-color:rgba(155,93,229,.25)}
-    .vs-name{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px}
-    .vs-pts{font-size:32px;font-weight:900;line-height:1}
-    .vs-pts.ron{color:var(--a1)}
-    .vs-pts.hadas{color:var(--a2)}
-    .vs-emoji{font-size:11px;color:var(--muted);min-height:14px}
-    .vs-bar-wrap{width:100%;height:3px;background:rgba(255,255,255,.08);
-      border-radius:4px;overflow:hidden;margin-top:4px}
-    .vs-bar{height:100%;border-radius:4px;transition:width .6s ease}
-    .vs-bar.ron{background:var(--a1)}
-    .vs-bar.hadas{background:var(--a2)}
-    .vs-sep{font-size:20px;font-weight:900;color:var(--muted);flex-shrink:0}
+    /* Warmth row */
+    .warmth-row{width:100%;max-width:460px;padding:16px 0 4px}
+    .warmth-card{background:var(--card);border-radius:var(--r);padding:18px 20px;
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      border:1.5px solid rgba(255,100,100,.18)}
+    .warmth-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
+    .warmth-temp{font-size:48px;font-weight:900;line-height:1;
+      background:linear-gradient(135deg,var(--a1),var(--a2));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .warmth-label{font-size:15px;color:rgba(255,255,255,.75);text-align:center}
+    .warmth-players{width:100%;display:flex;justify-content:space-between;
+      margin-top:8px;padding-top:10px;border-top:1px solid rgba(255,255,255,.07)}
+    .warmth-player{display:flex;flex-direction:column;align-items:center;gap:2px}
+    .warmth-pname{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px}
+    .warmth-ppts{font-size:18px;font-weight:800}
+    .warmth-ppts.ron{color:var(--a1)}
+    .warmth-ppts.hadas{color:var(--a2)}
+    .warmth-pemoji{font-size:10px;color:var(--muted);min-height:13px}
+
+    /* Forfeit card */
+    .forfeit-card{width:100%;max-width:460px;background:linear-gradient(135deg,rgba(224,81,122,.12),rgba(155,93,229,.12));
+      border:1.5px solid rgba(224,81,122,.3);border-radius:var(--r);padding:14px 16px;
+      display:none;flex-direction:column;gap:6px;margin-top:0}
+    .forfeit-card.visible{display:flex}
+    .forfeit-who{font-size:11px;font-weight:700;color:var(--a1);letter-spacing:.5px}
+    .forfeit-text{font-size:14px;color:rgba(255,255,255,.85);line-height:1.5}
 
     /* Stats chips */
     .stats-row{width:100%;max-width:460px;display:flex;gap:8px;padding:12px 0 4px;flex-wrap:wrap}
@@ -417,20 +424,29 @@
     </div>
   </div>
 
-  <div class="vs-row">
-    <div class="vs-card ron-card">
-      <div class="vs-name">רון</div>
-      <div class="vs-pts ron" id="ronPts">0</div>
-      <div class="vs-emoji" id="ronTopEmoji"></div>
-      <div class="vs-bar-wrap"><div class="vs-bar ron" id="ronBar" style="width:0%"></div></div>
+  <div class="warmth-row">
+    <div class="warmth-card">
+      <div class="warmth-title">חום הזוגיות</div>
+      <div class="warmth-temp" id="warmthTemp">0°</div>
+      <div class="warmth-label" id="warmthLabel">המשחק רק מתחיל… 🌱</div>
+      <div class="warmth-players">
+        <div class="warmth-player">
+          <div class="warmth-pname">רון</div>
+          <div class="warmth-ppts ron" id="ronPts">0</div>
+          <div class="warmth-pemoji" id="ronTopEmoji"></div>
+        </div>
+        <div class="warmth-player">
+          <div class="warmth-pname">הדס</div>
+          <div class="warmth-ppts hadas" id="hadasPts">0</div>
+          <div class="warmth-pemoji" id="hadasTopEmoji"></div>
+        </div>
+      </div>
     </div>
-    <div class="vs-sep">VS</div>
-    <div class="vs-card hadas-card">
-      <div class="vs-name">הדס</div>
-      <div class="vs-pts hadas" id="hadasPts">0</div>
-      <div class="vs-emoji" id="hadasTopEmoji"></div>
-      <div class="vs-bar-wrap"><div class="vs-bar hadas" id="hadasBar" style="width:0%"></div></div>
-    </div>
+  </div>
+
+  <div class="forfeit-card" id="forfeitCard">
+    <div class="forfeit-who" id="forfeitWho"></div>
+    <div class="forfeit-text" id="forfeitText"></div>
   </div>
 
   <div class="stats-row">
@@ -1077,18 +1093,37 @@ function renderReactions(reactions) {
 function applyStats(stats) {
   if (!stats) return;
   curStats = stats;
-  const p  = stats.points;
-  const max = Math.max(p[0], p[1], 1);
+  const p = stats.points;
+
+  // Individual points
   document.getElementById('ronPts').textContent   = p[0];
   document.getElementById('hadasPts').textContent = p[1];
-  document.getElementById('ronBar').style.width   = `${p[0]/max*100}%`;
-  document.getElementById('hadasBar').style.width = `${p[1]/max*100}%`;
   document.getElementById('ronTopEmoji').textContent   = topEmoji(stats.reactionCounts[0]);
   document.getElementById('hadasTopEmoji').textContent = topEmoji(stats.reactionCounts[1]);
+
+  // Warmth (shared score)
+  if (stats.warmth) {
+    document.getElementById('warmthTemp').textContent  = stats.warmth.temp;
+    document.getElementById('warmthLabel').textContent = stats.warmth.label;
+  }
+
+  // Forfeit card
+  const forfeitCard = document.getElementById('forfeitCard');
+  if (stats.forfeit && stats.behindName) {
+    document.getElementById('forfeitWho').textContent  = `💛 צ'אלנג' ל${stats.behindName}:`;
+    document.getElementById('forfeitText').textContent = stats.forfeit;
+    forfeitCard.classList.add('visible');
+  } else {
+    forfeitCard.classList.remove('visible');
+  }
+
+  // Stat chips
   document.getElementById('statCards').textContent = stats.cardsPlayed;
   document.getElementById('statCats').textContent  = (stats.categoriesPlayed||[]).length;
   document.getElementById('statSync').textContent  = stats.bothReacted;
   document.getElementById('statTotal').textContent = p[0]+p[1];
+
+  // Dashboard subtitle
   const total = p[0]+p[1];
   document.getElementById('dashSubtitle').textContent =
     total > 0 ? `${total} נקודות יחד • ${stats.cardsPlayed} כרטיסים` : 'בואו נתחיל לשחק!';
