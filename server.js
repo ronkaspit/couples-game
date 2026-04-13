@@ -197,6 +197,10 @@ const CATS = {
     rounds: 6,   // 3 photos per person, alternating
     cards: []    // generated dynamically — no pre-written text
   },
+  custom: {
+    label:'ממני אליך', icon:'💌', color:'#ff6b81', grad:'linear-gradient(135deg,#ff6b81,#9b5de5)',
+    cards:[]   // populated dynamically by players
+  },
   roleplay: {
     label:'תפקידים', icon:'🎭', color:'#fd9644', grad:'linear-gradient(135deg,#fd9644,#e55039)',
     cards:[
@@ -244,6 +248,8 @@ const GAME = {
   cardIdx:   0,
   reactions: {},
   history:   [],
+  customCards: [[], []],
+  savedMoments: [],
   stats: {
     points:          [0, 0],
     reactionCounts:  [{}, {}],
@@ -288,6 +294,27 @@ const FORFEITS = [
   'ציירו פורטרט אחד של השני — כמה שאפשר (לא חייב להיות יפה 😄) 🎨',
 ];
 
+const NIGHTLY_QUESTIONS = [
+  'מה הרגע הכי טוב שהיה לנו היום?',
+  'מה משהו שרצית לספר לי היום ולא הספקת?',
+  'מה עשה אותך שמח/ה היום — גם אם זה קטן?',
+  'מה הדבר שהכי העריכת בי היום?',
+  'מה חלמת בלילה האחרון?',
+  'אם היום היה צבע — מה הוא ולמה?',
+  'מה היית רוצה שנעשה ביחד מחר?',
+  'מתי בדיוק היום חשבת עליי?',
+  'מה הדבר שהכי הפריע לך היום? אני פה.',
+  'מה ההרגשה שאתה/ת הולך/ת לישון איתה?',
+  'מה הדבר שאתה/ת הכי מחכה לו השבוע?',
+  'ספר/י לי דבר אחד שעשה לך טוב היום.',
+  'מה רגע שהרגשת גאווה היום — בעצמך או במישהו?',
+  'מה תודה אחת שיש לך מהיום?',
+  'אם יכולת לשנות דבר אחד מהיום — מה זה היה?',
+];
+
+let lastNightlyDate = '';
+let lastNightlyQ = '';
+
 function warmthLabel(total) {
   if (total === 0)   return { temp: '0°',  label: 'המשחק רק מתחיל… 🌱' };
   if (total < 30)    return { temp: `${total}°`, label: 'הלב מתעורר 💛' };
@@ -322,6 +349,7 @@ function fullStats() {
     behindIdx,
     behindName:      behindIdx >= 0 ? PLAYERS[behindIdx] : null,
     forfeit,
+    savedMoments:    GAME.savedMoments,
   };
 }
 
@@ -357,6 +385,8 @@ io.on('connection', (socket) => {
     GAME.players[playerIdx]   = socket;
     socket.data.playerIdx     = playerIdx;
     socket.emit('joined', { playerIdx, state: gameState() });
+    socket.emit('custom_cards_update', { customCards: GAME.customCards });
+    socket.emit('moments_update', { moments: GAME.savedMoments });
     broadcast('online_update', { online: GAME.players.map(s => !!s) });
   });
 
@@ -365,6 +395,19 @@ io.on('connection', (socket) => {
     GAME.cat       = cat;
     GAME.reactions = {};
     if (!GAME.stats.categoriesPlayed.includes(cat)) GAME.stats.categoriesPlayed.push(cat);
+
+    if (cat === 'custom') {
+      // Combine both players' custom cards
+      const allCustom = [...GAME.customCards[0], ...GAME.customCards[1]];
+      if (allCustom.length === 0) {
+        socket.emit('toast', 'אין עדיין כרטיסים אישיים — כתבו אחד! 💌');
+        return;
+      }
+      GAME.deck = shuffle(allCustom);
+      GAME.cardIdx = 0;
+      broadcast('game_state', gameState());
+      return;
+    }
 
     if (CATS[cat].isPhotoMode) {
       // Photo mode: generate alternating rounds
@@ -453,6 +496,37 @@ io.on('connection', (socket) => {
     broadcast('game_state', { ...gameState(), isRandom: true });
   });
 
+  socket.on('add_custom_card', ({ text }) => {
+    const pi = socket.data.playerIdx;
+    if (pi === undefined || !text || text.trim().length === 0) return;
+    const card = { id: `custom_${Date.now()}`, text: text.trim(), from: pi, fromName: PLAYERS[pi], icon: '💌' };
+    GAME.customCards[pi].push(card);
+    broadcast('custom_cards_update', { customCards: GAME.customCards });
+  });
+
+  socket.on('get_nightly', () => {
+    const today = new Date().toISOString().slice(0, 10);
+    if (lastNightlyDate !== today) {
+      lastNightlyQ = NIGHTLY_QUESTIONS[Math.floor(Math.random() * NIGHTLY_QUESTIONS.length)];
+      lastNightlyDate = today;
+    }
+    broadcast('nightly_question', { question: lastNightlyQ, date: today });
+  });
+
+  socket.on('save_moment', ({ cardText, catKey, reactions }) => {
+    GAME.savedMoments.push({
+      text: cardText,
+      cat: catKey,
+      reactions,
+      ts: Date.now(),
+    });
+    broadcast('moments_update', { moments: GAME.savedMoments });
+  });
+
+  socket.on('get_moments', () => {
+    socket.emit('moments_update', { moments: GAME.savedMoments });
+  });
+
   socket.on('reset_game', () => {
     GAME.stats = {
       points:           [0, 0],
@@ -463,6 +537,7 @@ io.on('connection', (socket) => {
       badges:           [[], []],
     };
     GAME.history   = [];
+    GAME.customCards = [[], []];
     GAME.cat       = null;
     GAME.deck      = [];
     GAME.cardIdx   = 0;

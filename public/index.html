@@ -387,6 +387,81 @@
       color:var(--a3);z-index:999;animation:ptsUp .8s ease-out forwards}
     @keyframes ptsUp{0%{opacity:1;transform:translateY(0)}
       100%{opacity:0;transform:translateY(-60px)}}
+
+    /* ══════════════════════════════
+       NIGHTLY QUESTION
+    ══════════════════════════════ */
+    .nightly-card{width:100%;max-width:460px;
+      background:linear-gradient(135deg,rgba(95,39,205,.15),rgba(0,201,167,.1));
+      border:1.5px solid rgba(95,39,205,.35);border-radius:var(--r);
+      padding:18px 20px;margin-top:10px;cursor:pointer;
+      transition:transform .15s}
+    .nightly-card:active{transform:scale(.98)}
+    .nightly-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+    .nightly-icon{font-size:24px}
+    .nightly-title{font-size:13px;font-weight:700;color:var(--a4)}
+    .nightly-date{font-size:10px;color:var(--muted);margin-right:auto}
+    .nightly-q{font-size:16px;font-weight:600;line-height:1.6;color:var(--text);text-align:center}
+    .nightly-hint{font-size:11px;color:var(--muted);text-align:center;margin-top:6px}
+
+    /* ══════════════════════════════
+       PERSONAL CARDS / CUSTOM
+    ══════════════════════════════ */
+    .custom-section{width:100%;max-width:460px;margin-top:6px}
+    .custom-write-card{background:var(--card);border-radius:var(--r);
+      border:1.5px dashed rgba(255,107,129,.4);padding:16px;
+      display:flex;flex-direction:column;gap:10px}
+    .custom-write-title{font-size:13px;font-weight:700;color:#ff6b81;
+      display:flex;align-items:center;gap:6px}
+    .custom-input-row{display:flex;gap:8px}
+    .custom-input{flex:1;background:var(--card2);border:1.5px solid rgba(255,255,255,.1);
+      border-radius:12px;padding:12px 14px;font-size:14px;color:var(--text);
+      font-family:inherit;resize:none;outline:none;direction:rtl;min-height:42px}
+    .custom-input::placeholder{color:var(--muted)}
+    .custom-input:focus{border-color:rgba(255,107,129,.4)}
+    .custom-send{background:linear-gradient(135deg,#ff6b81,#9b5de5);border:none;
+      border-radius:12px;width:44px;font-size:18px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+      transition:transform .12s}
+    .custom-send:active{transform:scale(.9)}
+    .custom-list{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+    .custom-item{background:rgba(255,107,129,.06);border:1px solid rgba(255,107,129,.2);
+      border-radius:12px;padding:10px 14px;display:flex;align-items:flex-start;gap:8px}
+    .custom-item-from{font-size:10px;font-weight:700;color:#ff6b81;flex-shrink:0;padding-top:2px}
+    .custom-item-text{font-size:13px;line-height:1.5;color:rgba(255,255,255,.85)}
+
+    /* ══════════════════════════════
+       COUPLE'S BOOK
+    ══════════════════════════════ */
+    #s-book{padding-top:20px;gap:0}
+    .book-hdr{width:100%;max-width:460px;padding-bottom:16px;flex-shrink:0}
+    .book-hdr-title{font-size:22px;font-weight:900;
+      background:linear-gradient(135deg,var(--a1),var(--a4));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .book-hdr-sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .book-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+    .book-empty-icon{font-size:48px;margin-bottom:12px}
+    .book-empty-text{font-size:14px;line-height:1.6}
+    .book-list{width:100%;max-width:460px;display:flex;flex-direction:column;gap:10px;
+      padding-bottom:20px}
+    .book-item{background:var(--card);border-radius:var(--r);padding:16px;
+      border:1.5px solid rgba(255,255,255,.06);position:relative}
+    .book-item-date{font-size:10px;color:var(--muted);margin-bottom:6px;
+      display:flex;align-items:center;gap:6px}
+    .book-item-cat{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;
+      background:rgba(255,255,255,.07)}
+    .book-item-text{font-size:15px;font-weight:600;line-height:1.6;margin-bottom:8px}
+    .book-item-rxs{display:flex;gap:12px}
+    .book-item-rx{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
+    .book-item-rx span{font-size:18px}
+
+    /* Save button on game card */
+    .gcard-save{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);
+      border:1.5px solid rgba(255,255,255,.1);border-radius:50%;width:34px;height:34px;
+      font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      transition:background .15s,transform .12s}
+    .gcard-save:active{transform:scale(.9)}
+    .gcard-save.saved{background:rgba(247,183,49,.15);border-color:rgba(247,183,49,.4)}
   </style>
 </head>
 <body>
@@ -401,6 +476,10 @@
   <button class="nav-btn nav-pip" id="nav-play" onclick="navTo('play')">
     <span class="nav-icon">🎮</span>
     <span class="nav-label">שחקו</span>
+  </button>
+  <button class="nav-btn" id="nav-book" onclick="navTo('book')">
+    <span class="nav-icon">📖</span>
+    <span class="nav-label">ספר הזוג</span>
   </button>
   <button class="nav-btn" id="nav-settings" onclick="navTo('settings')">
     <span class="nav-icon">⚙️</span>
@@ -468,6 +547,16 @@
     </div>
   </div>
 
+  <div class="nightly-card" id="nightlyCard" onclick="requestNightly()" style="display:none">
+    <div class="nightly-hdr">
+      <span class="nightly-icon">🌙</span>
+      <span class="nightly-title">שאלת הלילה</span>
+      <span class="nightly-date" id="nightlyDate"></span>
+    </div>
+    <div class="nightly-q" id="nightlyQ">לוחצים לגלות…</div>
+    <div class="nightly-hint">שאלה יומית לפני השינה — מתחלפת כל יום</div>
+  </div>
+
   <div class="badges-section">
     <div class="section-title">🏅 תגים</div>
     <div class="badges-scroll" id="badgesGrid"></div>
@@ -511,6 +600,32 @@
       <div class="random-sub">גרלה רנדומלית מכל הקטגוריות</div>
     </div>
     <span class="random-arrow">←</span>
+  </div>
+
+  <div class="custom-section" id="customSection">
+    <div class="custom-write-card">
+      <div class="custom-write-title">💌 ממני אליך — כתבו שאלה אישית</div>
+      <div class="custom-input-row">
+        <textarea class="custom-input" id="customInput" rows="1" placeholder="כתוב/כתבי שאלה לבן/בת הזוג…"></textarea>
+        <button class="custom-send" onclick="sendCustomCard()">💌</button>
+      </div>
+      <div class="custom-list" id="customList"></div>
+    </div>
+  </div>
+
+  <div class="cat-section-title" style="margin-top:14px">💌 אישי</div>
+  <div class="cat-list">
+    <div class="cat-row" onclick="selectCat('custom')" style="--c:#ff6b81;border-color:rgba(255,107,129,.25)">
+      <div class="cat-row-icon">💌</div>
+      <div class="cat-row-body">
+        <div class="cat-row-name" style="color:#ff6b81">ממני אליך</div>
+        <div class="cat-row-desc">שאלות שכתבתם אחד לשני</div>
+      </div>
+      <div class="cat-row-right">
+        <span class="cat-count" id="customCount" style="background:rgba(255,107,129,.12);color:#ff6b81">0</span>
+        <span class="cat-arrow">›</span>
+      </div>
+    </div>
   </div>
 
   <div class="cat-section-title">שיחה ועומק</div>
@@ -648,6 +763,7 @@
   <!-- Regular card -->
   <div class="card-wrap" id="regularCard">
     <div class="gcard" id="gcard">
+      <button class="gcard-save" id="gcSave" onclick="saveMoment()" title="שמור לספר הזוג">🔖</button>
       <div class="gcard-icon" id="gcIcon">💬</div>
       <div class="gcard-player" id="gcPlayer"></div>
       <div class="gcard-text" id="gcText"></div>
@@ -725,6 +841,19 @@
   </div>
 </div>
 
+<!-- ══ COUPLE'S BOOK ══ -->
+<div class="screen hidden" id="s-book">
+  <div class="book-hdr">
+    <div class="book-hdr-title">📖 ספר הזוג</div>
+    <div class="book-hdr-sub">רגעים שבחרתם לשמור מהמשחק</div>
+  </div>
+  <div class="book-empty" id="bookEmpty">
+    <div class="book-empty-icon">📖</div>
+    <div class="book-empty-text">עדיין לא שמרתם רגעים<br/>לחצו 🔖 על כרטיס במשחק כדי לשמור אותו</div>
+  </div>
+  <div class="book-list" id="bookList"></div>
+</div>
+
 <!-- ══ SETTINGS ══ -->
 <div class="screen hidden" id="s-settings">
   <div class="settings-hdr">
@@ -772,7 +901,7 @@
         <span class="settings-item-icon">🎮</span>
         <div class="settings-item-body">
           <div class="settings-item-title">אנחנו — משחק לזוגות</div>
-          <div class="settings-item-sub">10 קטגוריות • 130+ כרטיסים</div>
+          <div class="settings-item-sub">11 קטגוריות • 130+ כרטיסים • שאלת הלילה • ספר הזוג</div>
         </div>
       </div>
     </div>
@@ -821,6 +950,10 @@ function navTo(tab) {
     } else {
       show('s-cat');
     }
+  } else if (tab === 'book') {
+    setActiveNav('nav-book');
+    socket.emit('get_moments');
+    show('s-book');
   } else if (tab === 'settings') {
     setActiveNav('nav-settings');
     updateSettingsInfo();
@@ -858,6 +991,7 @@ socket.on('joined', ({ playerIdx, state }) => {
   applyOnline(state.online);
   updateStatuses(state.online);
   document.getElementById('nav-play').classList.add('has-game');
+  requestNightly();
   if (state.cat && state.card) {
     applyGameState(state);
     showGame();
@@ -927,6 +1061,28 @@ socket.on('stats_reset', ({ stats }) => {
 });
 
 socket.on('replaced', () => { toast('התחברת ממכשיר אחר'); location.reload(); });
+
+// ── CUSTOM CARDS ──
+socket.on('custom_cards_update', ({ customCards }) => {
+  renderCustomCards(customCards);
+});
+
+socket.on('toast', (msg) => { toast(msg); });
+
+// ── NIGHTLY QUESTION ──
+socket.on('nightly_question', ({ question, date }) => {
+  const card = document.getElementById('nightlyCard');
+  card.style.display = 'block';
+  document.getElementById('nightlyQ').textContent = question;
+  const d = new Date(date);
+  document.getElementById('nightlyDate').textContent =
+    d.toLocaleDateString('he-IL', { day:'numeric', month:'long' });
+});
+
+// ── COUPLE'S BOOK ──
+socket.on('moments_update', ({ moments }) => {
+  renderBook(moments);
+});
 
 // ══ ACTIONS ════════════════════════════
 function joinAs(pi) {
@@ -1039,6 +1195,9 @@ function applyGameState(state) {
   document.getElementById('btnNext').textContent =
     state.cardIdx===state.total-1 ? 'סיום 🎉' : 'הבא ❤️';
   const card = state.card;
+  currentCardText = card.text;
+  currentCardCat  = state.cat;
+  document.getElementById('gcSave').classList.remove('saved');
   document.getElementById('gcIcon').textContent  = card.icon || catMeta.icon;
   document.getElementById('gcText').textContent  = card.text;
   document.getElementById('gcTip').textContent   = card.tip || '';
@@ -1263,6 +1422,83 @@ document.getElementById('gcard').addEventListener('touchend',e=>{
 document.getElementById('m-who').addEventListener('click', e=>{
   if(e.target===document.getElementById('m-who')) hideModal('m-who');
 });
+
+// ══ NIGHTLY QUESTION ════════════════════
+function requestNightly() {
+  socket.emit('get_nightly');
+}
+// Auto-request nightly on load after join
+setTimeout(() => { if (myPIdx >= 0) requestNightly(); }, 1500);
+
+// ══ CUSTOM CARDS (ממני אליך) ═══════════
+function sendCustomCard() {
+  const input = document.getElementById('customInput');
+  const text = input.value.trim();
+  if (!text) return;
+  socket.emit('add_custom_card', { text });
+  input.value = '';
+  toast('💌 הכרטיס נוסף!');
+}
+
+function renderCustomCards(customCards) {
+  if (!customCards) return;
+  const all = [...customCards[0].map(c=>({...c,pi:0})), ...customCards[1].map(c=>({...c,pi:1}))];
+  const count = document.getElementById('customCount');
+  if (count) count.textContent = all.length;
+  const list = document.getElementById('customList');
+  if (!list) return;
+  if (all.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = all.slice(-5).reverse().map(c =>
+    `<div class="custom-item">
+      <span class="custom-item-from">${c.fromName}:</span>
+      <span class="custom-item-text">${c.text}</span>
+    </div>`
+  ).join('');
+}
+
+// ══ COUPLE'S BOOK (ספר הזוג) ════════════
+let currentCardText = '';
+let currentCardCat  = '';
+
+function saveMoment() {
+  if (!currentCardText) return;
+  const btn = document.getElementById('gcSave');
+  if (btn.classList.contains('saved')) { toast('כבר שמרת את הרגע הזה'); return; }
+  socket.emit('save_moment', {
+    cardText:  currentCardText,
+    catKey:    currentCardCat,
+    reactions: { ...curReactions }
+  });
+  btn.classList.add('saved');
+  toast('💛 הרגע נשמר לספר הזוג!');
+}
+
+function renderBook(moments) {
+  const empty = document.getElementById('bookEmpty');
+  const list  = document.getElementById('bookList');
+  if (!moments || moments.length === 0) {
+    empty.style.display = 'block';
+    list.innerHTML = '';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = moments.slice().reverse().map(m => {
+    const d = new Date(m.ts);
+    const dateStr = d.toLocaleDateString('he-IL', { day:'numeric', month:'long', year:'numeric' });
+    const timeStr = d.toLocaleTimeString('he-IL', { hour:'2-digit', minute:'2-digit' });
+    const rxParts = m.reactions ? Object.entries(m.reactions).map(([pi,em]) =>
+      `<div class="book-item-rx"><span>${em}</span> ${NAMES[pi]}</div>`
+    ).join('') : '';
+    return `<div class="book-item">
+      <div class="book-item-date">
+        <span>${dateStr} • ${timeStr}</span>
+        <span class="book-item-cat">${m.cat || ''}</span>
+      </div>
+      <div class="book-item-text">${m.text}</div>
+      <div class="book-item-rxs">${rxParts}</div>
+    </div>`;
+  }).join('');
+}
 
 // Particles
 (function(){
