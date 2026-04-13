@@ -392,6 +392,37 @@ io.on('connection', (socket) => {
     broadcast('show_cats', { stats: fullStats() });
   });
 
+  socket.on('random_card', () => {
+    // Pick random regular category (exclude photo mode)
+    const regularCats = Object.entries(CATS).filter(([,v]) => !v.isPhotoMode);
+    const [catKey, cat] = regularCats[Math.floor(Math.random() * regularCats.length)];
+    GAME.cat       = catKey;
+    GAME.reactions = {};
+    if (!GAME.stats.categoriesPlayed.includes(catKey)) GAME.stats.categoriesPlayed.push(catKey);
+    // Pick random card from that category
+    const card = cat.cards[Math.floor(Math.random() * cat.cards.length)];
+    GAME.deck    = [card];
+    GAME.cardIdx = 0;
+    broadcast('game_state', { ...gameState(), isRandom: true });
+  });
+
+  socket.on('reset_game', () => {
+    GAME.stats = {
+      points:           [0, 0],
+      reactionCounts:   [{}, {}],
+      cardsPlayed:      0,
+      bothReacted:      0,
+      categoriesPlayed: [],
+      badges:           [[], []],
+    };
+    GAME.history   = [];
+    GAME.cat       = null;
+    GAME.deck      = [];
+    GAME.cardIdx   = 0;
+    GAME.reactions = {};
+    broadcast('stats_reset', { stats: fullStats() });
+  });
+
   socket.on('disconnect', () => {
     const pi = socket.data.playerIdx;
     if (pi === undefined) return;

@@ -92,6 +92,29 @@
     .badge-label{font-size:11px;font-weight:600}
 
     /* Play button */
+    /* Random + Settings */
+    .btn-random{width:100%;max-width:400px;background:rgba(247,183,49,.12);
+      border:2px solid rgba(247,183,49,.4);border-radius:50px;color:var(--a3);
+      padding:14px;font-size:15px;font-weight:700;cursor:pointer;
+      transition:background .18s,transform .15s;margin-bottom:10px}
+    .btn-random:active{transform:scale(.97);background:rgba(247,183,49,.2)}
+    .settings-wrap{width:100%;max-width:400px;margin-top:20px;
+      border-top:1px solid rgba(255,255,255,.08);padding-top:16px}
+    .settings-title{font-size:12px;color:var(--muted);font-weight:700;
+      letter-spacing:.5px;margin-bottom:12px;text-align:center}
+    .btn-reset{width:100%;background:rgba(255,71,87,.08);border:1.5px solid rgba(255,71,87,.3);
+      border-radius:50px;color:#ff4757;padding:13px;font-size:14px;font-weight:600;
+      cursor:pointer;transition:background .18s,transform .15s}
+    .btn-reset:active{transform:scale(.97);background:rgba(255,71,87,.18)}
+    .cat-home-btn{background:none;border:none;color:var(--muted);font-size:13px;
+      cursor:pointer;padding:10px 0;display:flex;align-items:center;gap:5px;
+      transition:color .15s;margin-top:4px;align-self:flex-start}
+    .cat-home-btn:hover{color:var(--text)}
+    .btn-random-end{background:rgba(155,93,229,.12);border:1.5px solid rgba(155,93,229,.4);
+      border-radius:50px;color:var(--a2);padding:13px;font-size:14px;font-weight:600;
+      cursor:pointer;width:100%;transition:background .15s,transform .15s}
+    .btn-random-end:active{transform:scale(.97)}
+
     .btn-play{width:100%;max-width:400px;background:linear-gradient(135deg,var(--a1),var(--a2));
       color:#fff;border:none;border-radius:50px;padding:18px;font-size:18px;
       font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(224,81,122,.35);
@@ -177,6 +200,10 @@
     .g-prog-wrap{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
     .g-prog{height:100%;border-radius:10px;transition:width .5s}
     .g-count{font-size:11px;color:var(--muted);font-weight:600;flex-shrink:0}
+    .g-home-btn{background:rgba(255,255,255,.08);border:none;border-radius:50%;
+      width:30px;height:30px;font-size:14px;cursor:pointer;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;transition:background .15s}
+    .g-home-btn:hover{background:rgba(255,255,255,.15)}
 
     .card-area{width:100%;max-width:400px}
     .gcard{background:var(--card);border-radius:var(--r);padding:24px 20px 18px;
@@ -394,7 +421,13 @@
     <div class="badges-grid" id="badgesGrid"></div>
   </div>
 
+  <button class="btn-random" onclick="goRandomFromDash()">🎲 שאלה מפתיעה</button>
   <button class="btn-play" onclick="show('s-who')">שחקו! 🎮</button>
+
+  <div class="settings-wrap">
+    <div class="settings-title">⚙️ הגדרות</div>
+    <button class="btn-reset" onclick="doReset()">🔄 איפוס משחק — נקודות, תגים והיסטוריה</button>
+  </div>
 </div>
 
 <!-- ══ WHO ARE YOU ══ -->
@@ -427,6 +460,8 @@
       <span class="odot" id="dot1"></span><span class="oname" id="oname1">הדס</span>
     </div>
   </div>
+
+  <button class="btn-random" onclick="doRandom()">🎲 שאלה מפתיעה — גרלה מכל הקטגוריות</button>
 
   <div class="cat-grid">
     <div class="cat-card cc-p" onclick="selectCat('personal')">
@@ -474,12 +509,13 @@
       </div>
     </div>
   </div>
+  <button class="cat-home-btn" onclick="doBackToDash()">← חזרה לדשבורד</button>
 </div>
 
 <!-- ══ GAME ══ -->
 <div class="screen hidden" id="s-game">
   <div class="g-hdr">
-    <img class="g-hdr-photo" src="/couple.jpg" alt="" onerror="this.style.display='none'"/>
+    <button class="g-home-btn" onclick="doBackToDash()" title="חזרה לבית">🏠</button>
     <span class="g-cat" id="gCat"></span>
     <div class="g-prog-wrap"><div class="g-prog" id="gProg"></div></div>
     <span class="g-count" id="gCount"></span>
@@ -565,8 +601,9 @@
   <div class="end-hist" id="endHist"></div>
 
   <div class="end-acts">
+    <button class="btn-random-end" onclick="doRandom()">🎲 שאלה מפתיעה</button>
     <button class="btn-primary" onclick="doPlayAgain()">קטגוריה אחרת 🔁</button>
-    <button class="btn-ghost" onclick="show('s-dash')">📊 דשבורד</button>
+    <button class="btn-ghost" onclick="doBackToDash()">🏠 דשבורד</button>
   </div>
 </div>
 
@@ -664,6 +701,12 @@ socket.on('show_cats', ({ stats }) => {
 
 socket.on('replaced', () => { toast('התחברת ממכשיר אחר'); location.reload(); });
 
+socket.on('stats_reset', ({ stats }) => {
+  applyStats(stats);
+  toast('המשחק אופס ✨ התחלה חדשה!');
+  show('s-dash');
+});
+
 // ══ ACTIONS ════════════════════════════
 function joinAs(pi) {
   myPIdx = pi;
@@ -674,6 +717,27 @@ function selectCat(cat) { socket.emit('select_cat', { cat }); }
 function doNext()  { socket.emit('next_card'); isPhotoMode = false; }
 function doSkip()  { socket.emit('next_card'); isPhotoMode = false; }
 function doPlayAgain() { socket.emit('back_to_cats'); }
+
+function doBackToDash() {
+  socket.emit('back_to_cats');
+  show('s-dash');
+}
+
+function doRandom() {
+  if (myPIdx === -1) { toast('בחרו קודם מי אתם 👆'); show('s-who'); return; }
+  socket.emit('random_card');
+}
+
+function goRandomFromDash() {
+  // From dashboard — need to join first if not yet joined
+  if (myPIdx === -1) { show('s-who'); return; }
+  socket.emit('random_card');
+}
+
+function doReset() {
+  if (!confirm('לאפס את המשחק לגמרי?\nכל הנקודות, התגים וההיסטוריה יימחקו.')) return;
+  socket.emit('reset_game');
+}
 
 function react(emoji, pi) {
   if (pi !== myPIdx) return;
