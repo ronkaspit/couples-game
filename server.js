@@ -247,6 +247,7 @@ const GAME = {
   deck:      [],
   cardIdx:   0,
   reactions: {},
+  answers:   {},   // { 0: 'text', 1: 'text' } — resets each card
   history:   [],
   customCards: [[], []],
   savedMoments: [],
@@ -364,6 +365,7 @@ function gameState() {
     cardIdx:  GAME.cardIdx,
     total:    GAME.deck.length,
     reactions:GAME.reactions,
+    answers:  GAME.answers,
     history:  GAME.history,
     stats:    fullStats(),
     online:   GAME.players.map(s => !!s),
@@ -449,9 +451,21 @@ io.on('connection', (socket) => {
   socket.on('next_card', () => {
     const card = GAME.deck[GAME.cardIdx];
     const r0   = GAME.reactions[0], r1 = GAME.reactions[1];
+    const a0   = GAME.answers[0],   a1 = GAME.answers[1];
     if (card) {
       if (r0 || r1) {
         GAME.history.push({ cat:GAME.cat, text:card.text, reactions:{...GAME.reactions}, ts:Date.now() });
+      }
+      // Auto-save to book if any written answers exist
+      if (a0 || a1) {
+        GAME.savedMoments.push({
+          text:      card.text,
+          cat:       GAME.cat,
+          reactions: { ...GAME.reactions },
+          answers:   { ...GAME.answers },
+          ts:        Date.now(),
+        });
+        broadcast('moments_update', { moments: GAME.savedMoments });
       }
       if (r0 && r1) GAME.stats.bothReacted++;
     }
@@ -462,7 +476,15 @@ io.on('connection', (socket) => {
     }
     GAME.cardIdx++;
     GAME.reactions = {};
+    GAME.answers   = {};
     broadcast('game_state', gameState());
+  });
+
+  socket.on('submit_answer', ({ answer }) => {
+    const pi = socket.data.playerIdx;
+    if (pi === undefined || !answer || !answer.trim()) return;
+    GAME.answers[pi] = answer.trim();
+    broadcast('answers_update', { answers: GAME.answers });
   });
 
   socket.on('react', ({ emoji, playerIdx }) => {
@@ -478,7 +500,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('back_to_cats', () => {
-    GAME.cat=null; GAME.deck=[]; GAME.cardIdx=0; GAME.reactions={};
+    GAME.cat=null; GAME.deck=[]; GAME.cardIdx=0; GAME.reactions={}; GAME.answers={};
     broadcast('show_cats', { stats: fullStats() });
   });
 

@@ -455,6 +455,32 @@
     .book-item-rx{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
     .book-item-rx span{font-size:18px}
 
+    /* ══════════════════════════════
+       WRITTEN ANSWERS
+    ══════════════════════════════ */
+    .answers-wrap{width:100%;max-width:460px;display:flex;flex-direction:column;
+      gap:8px;flex-shrink:0;margin-top:4px}
+    .answer-write{background:var(--card);border-radius:16px;
+      border:1.5px solid rgba(255,255,255,.07);overflow:hidden}
+    .answer-write-row{display:flex;align-items:flex-end;gap:0}
+    .answer-textarea{flex:1;background:transparent;border:none;outline:none;
+      padding:12px 14px;font-size:14px;color:var(--text);font-family:inherit;
+      resize:none;direction:rtl;min-height:44px;max-height:120px;line-height:1.5}
+    .answer-textarea::placeholder{color:var(--muted)}
+    .answer-send-btn{background:none;border:none;padding:10px 14px;
+      font-size:20px;cursor:pointer;color:var(--muted);
+      transition:color .15s,transform .12s;align-self:flex-end}
+    .answer-send-btn:active{transform:scale(.88)}
+    .answer-send-btn.ready{color:var(--a2)}
+    .answer-display{display:flex;flex-direction:column;gap:6px;padding:4px 0 2px}
+    .answer-bubble{border-radius:14px;padding:10px 14px;font-size:13px;
+      line-height:1.6;color:rgba(255,255,255,.9)}
+    .answer-bubble.mine{background:rgba(155,93,229,.14);border:1px solid rgba(155,93,229,.25);
+      margin-right:0;margin-left:20px}
+    .answer-bubble.partner{background:rgba(224,81,122,.1);border:1px solid rgba(224,81,122,.2);
+      margin-left:0;margin-right:20px}
+    .answer-bubble-name{font-size:10px;font-weight:700;margin-bottom:4px;opacity:.7}
+
     /* Save button on game card */
     .gcard-save{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.08);
       border:1.5px solid rgba(255,255,255,.1);border-radius:50%;width:34px;height:34px;
@@ -817,6 +843,19 @@
     </div>
   </div>
 
+  <!-- Written answers -->
+  <div class="answers-wrap" id="answersWrap">
+    <div class="answer-write" id="answerWriteBox">
+      <div class="answer-write-row">
+        <textarea class="answer-textarea" id="answerInput"
+          placeholder="כתב/כתבי את התשובה שלך…" rows="1"
+          oninput="onAnswerInput(this)"></textarea>
+        <button class="answer-send-btn" id="answerSendBtn" onclick="submitAnswer()">✉️</button>
+      </div>
+    </div>
+    <div class="answer-display" id="answerDisplay"></div>
+  </div>
+
   <div class="turn-hint" id="turnHint"></div>
   <div class="g-actions">
     <button class="btn-skip" onclick="doSkip()">⏭ דלג</button>
@@ -933,6 +972,7 @@ const BADGE_DEFS = [
 let myPIdx = -1;
 let catMeta = null;
 let curReactions = {};
+let curAnswers   = {};
 let curStats = { points:[0,0], reactionCounts:[{},{}], cardsPlayed:0,
   bothReacted:0, categoriesPlayed:[], badges:[[],[]] };
 let isPhotoMode = false;
@@ -1069,6 +1109,12 @@ socket.on('custom_cards_update', ({ customCards }) => {
 
 socket.on('toast', (msg) => { toast(msg); });
 
+// ── WRITTEN ANSWERS ──
+socket.on('answers_update', ({ answers }) => {
+  curAnswers = answers || {};
+  renderAnswers(curAnswers);
+});
+
 // ── NIGHTLY QUESTION ──
 socket.on('nightly_question', ({ question, date }) => {
   const card = document.getElementById('nightlyCard');
@@ -1198,6 +1244,8 @@ function applyGameState(state) {
   currentCardText = card.text;
   currentCardCat  = state.cat;
   document.getElementById('gcSave').classList.remove('saved');
+  curAnswers = state.answers || {};
+  renderAnswers(curAnswers);
   document.getElementById('gcIcon').textContent  = card.icon || catMeta.icon;
   document.getElementById('gcText').textContent  = card.text;
   document.getElementById('gcTip').textContent   = card.tip || '';
@@ -1423,6 +1471,55 @@ document.getElementById('m-who').addEventListener('click', e=>{
   if(e.target===document.getElementById('m-who')) hideModal('m-who');
 });
 
+// ══ WRITTEN ANSWERS ═════════════════════
+function onAnswerInput(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('answerSendBtn').classList.toggle('ready', el.value.trim().length > 0);
+}
+
+function submitAnswer() {
+  const input = document.getElementById('answerInput');
+  const text = input.value.trim();
+  if (!text) return;
+  socket.emit('submit_answer', { answer: text });
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('answerSendBtn').classList.remove('ready');
+  toast('✉️ התשובה נשלחה');
+}
+
+function renderAnswers(answers) {
+  const display = document.getElementById('answerDisplay');
+  const box     = document.getElementById('answerWriteBox');
+  if (!display) return;
+
+  // Hide write box if I already answered
+  if (myPIdx >= 0 && answers[myPIdx]) {
+    box.style.display = 'none';
+  } else {
+    box.style.display = 'block';
+  }
+
+  const bubbles = Object.entries(answers).map(([pi, text]) => {
+    const isMine = parseInt(pi) === myPIdx;
+    return `<div class="answer-bubble ${isMine ? 'mine' : 'partner'}">
+      <div class="answer-bubble-name">${NAMES[pi]}</div>
+      ${text}
+    </div>`;
+  }).join('');
+  display.innerHTML = bubbles;
+}
+
+function resetAnswers() {
+  curAnswers = {};
+  renderAnswers({});
+  const input = document.getElementById('answerInput');
+  if (input) { input.value = ''; input.style.height = 'auto'; }
+  const box = document.getElementById('answerWriteBox');
+  if (box) box.style.display = 'block';
+}
+
 // ══ NIGHTLY QUESTION ════════════════════
 function requestNightly() {
   socket.emit('get_nightly');
@@ -1489,13 +1586,21 @@ function renderBook(moments) {
     const rxParts = m.reactions ? Object.entries(m.reactions).map(([pi,em]) =>
       `<div class="book-item-rx"><span>${em}</span> ${NAMES[pi]}</div>`
     ).join('') : '';
+    const answerParts = m.answers ? Object.entries(m.answers).map(([pi, text]) =>
+      `<div style="margin-top:8px;background:rgba(155,93,229,.08);border:1px solid rgba(155,93,229,.18);
+        border-radius:12px;padding:8px 12px;font-size:13px;line-height:1.5">
+        <div style="font-size:10px;font-weight:700;color:var(--a2);margin-bottom:3px">${NAMES[pi]}:</div>
+        ${text}
+      </div>`
+    ).join('') : '';
     return `<div class="book-item">
       <div class="book-item-date">
         <span>${dateStr} • ${timeStr}</span>
         <span class="book-item-cat">${m.cat || ''}</span>
       </div>
       <div class="book-item-text">${m.text}</div>
-      <div class="book-item-rxs">${rxParts}</div>
+      ${answerParts}
+      <div class="book-item-rxs" style="margin-top:${answerParts?'8':'0'}px">${rxParts}</div>
     </div>`;
   }).join('');
 }
