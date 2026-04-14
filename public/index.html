@@ -1111,8 +1111,14 @@ socket.on('toast', (msg) => { toast(msg); });
 
 // ── WRITTEN ANSWERS ──
 socket.on('answers_update', ({ answers }) => {
-  curAnswers = answers || {};
+  const prev    = curAnswers;
+  curAnswers    = answers || {};
   renderAnswers(curAnswers);
+  // Toast when partner sends their answer
+  const partnerIdx = myPIdx >= 0 ? 1 - myPIdx : -1;
+  if (partnerIdx >= 0 && !prev[partnerIdx] && curAnswers[partnerIdx]) {
+    toast(`✉️ ${NAMES[partnerIdx]} ענה/תה!`);
+  }
 });
 
 // ── NIGHTLY QUESTION ──
@@ -1244,6 +1250,7 @@ function applyGameState(state) {
   currentCardText = card.text;
   currentCardCat  = state.cat;
   document.getElementById('gcSave').classList.remove('saved');
+  resetAnswers();
   curAnswers = state.answers || {};
   renderAnswers(curAnswers);
   document.getElementById('gcIcon').textContent  = card.icon || catMeta.icon;
@@ -1472,6 +1479,8 @@ document.getElementById('m-who').addEventListener('click', e=>{
 });
 
 // ══ WRITTEN ANSWERS ═════════════════════
+// States: 'idle' | 'sent' | 'both'
+
 function onAnswerInput(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
@@ -1483,41 +1492,68 @@ function submitAnswer() {
   const text = input.value.trim();
   if (!text) return;
   socket.emit('submit_answer', { answer: text });
-  input.value = '';
-  input.style.height = 'auto';
-  document.getElementById('answerSendBtn').classList.remove('ready');
-  toast('✉️ התשובה נשלחה');
 }
 
 function renderAnswers(answers) {
-  const display = document.getElementById('answerDisplay');
-  const box     = document.getElementById('answerWriteBox');
-  if (!display) return;
+  const writeBox = document.getElementById('answerWriteBox');
+  const display  = document.getElementById('answerDisplay');
+  if (!writeBox || !display) return;
 
-  // Hide write box if I already answered
-  if (myPIdx >= 0 && answers[myPIdx]) {
-    box.style.display = 'none';
+  const myAnswer      = myPIdx >= 0 ? answers[myPIdx]   : null;
+  const partnerIdx    = myPIdx >= 0 ? 1 - myPIdx        : -1;
+  const partnerAnswer = partnerIdx >= 0 ? answers[partnerIdx] : null;
+  const partnerName   = partnerIdx >= 0 ? NAMES[partnerIdx]   : '';
+
+  // Write box: visible only if I haven't answered yet
+  if (myAnswer) {
+    writeBox.style.display = 'none';
   } else {
-    box.style.display = 'block';
+    writeBox.style.display = 'block';
+    // Don't clear the textarea — user might be mid-typing
   }
 
-  const bubbles = Object.entries(answers).map(([pi, text]) => {
-    const isMine = parseInt(pi) === myPIdx;
-    return `<div class="answer-bubble ${isMine ? 'mine' : 'partner'}">
-      <div class="answer-bubble-name">${NAMES[pi]}</div>
-      ${text}
+  // Build display
+  let html = '';
+
+  // My answer bubble (if sent)
+  if (myAnswer) {
+    html += `<div class="answer-bubble mine">
+      <div class="answer-bubble-name">אני</div>
+      ${myAnswer}
     </div>`;
-  }).join('');
-  display.innerHTML = bubbles;
+  }
+
+  // Partner's answer OR waiting indicator
+  if (partnerAnswer) {
+    html += `<div class="answer-bubble partner">
+      <div class="answer-bubble-name">${partnerName}</div>
+      ${partnerAnswer}
+    </div>`;
+  } else if (myAnswer) {
+    // I answered but partner hasn't
+    html += `<div style="text-align:center;font-size:12px;color:var(--muted);padding:8px 0">
+      ⏳ מחכה לתשובה של ${partnerName}…
+    </div>`;
+  }
+
+  display.innerHTML = html;
+
+  // Both answered — highlight + auto-save hint
+  if (myAnswer && partnerAnswer) {
+    display.innerHTML += `<div style="text-align:center;font-size:11px;color:var(--a4);
+      padding:6px 0">✨ שניכם ענו — יישמר לספר הזוג בלחיצה על "הבא"</div>`;
+  }
 }
 
 function resetAnswers() {
   curAnswers = {};
-  renderAnswers({});
   const input = document.getElementById('answerInput');
-  if (input) { input.value = ''; input.style.height = 'auto'; }
-  const box = document.getElementById('answerWriteBox');
-  if (box) box.style.display = 'block';
+  if (input) {
+    input.value = '';
+    input.style.height = 'auto';
+  }
+  document.getElementById('answerSendBtn')?.classList.remove('ready');
+  renderAnswers({});
 }
 
 // ══ NIGHTLY QUESTION ════════════════════
