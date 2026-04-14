@@ -535,11 +535,12 @@ io.on('connection', (socket) => {
     broadcast('nightly_question', { question: lastNightlyQ, date: today });
   });
 
-  socket.on('save_moment', ({ cardText, catKey, reactions }) => {
+  socket.on('save_moment', ({ cardText, catKey, reactions, answers }) => {
     GAME.savedMoments.push({
       text: cardText,
       cat: catKey,
       reactions,
+      answers: answers || { ...GAME.answers },
       ts: Date.now(),
     });
     broadcast('moments_update', { moments: GAME.savedMoments });

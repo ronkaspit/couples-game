@@ -1600,7 +1600,8 @@ function saveMoment() {
   socket.emit('save_moment', {
     cardText:  currentCardText,
     catKey:    currentCardCat,
-    reactions: { ...curReactions }
+    reactions: { ...curReactions },
+    answers:   { ...curAnswers }
   });
   btn.classList.add('saved');
   toast('💛 הרגע נשמר לספר הזוג!');
@@ -1622,13 +1623,19 @@ function renderBook(moments) {
     const rxParts = m.reactions ? Object.entries(m.reactions).map(([pi,em]) =>
       `<div class="book-item-rx"><span>${em}</span> ${NAMES[pi]}</div>`
     ).join('') : '';
-    const answerParts = m.answers ? Object.entries(m.answers).map(([pi, text]) =>
-      `<div style="margin-top:8px;background:rgba(155,93,229,.08);border:1px solid rgba(155,93,229,.18);
-        border-radius:12px;padding:8px 12px;font-size:13px;line-height:1.5">
-        <div style="font-size:10px;font-weight:700;color:var(--a2);margin-bottom:3px">${NAMES[pi]}:</div>
-        ${text}
-      </div>`
-    ).join('') : '';
+    const hasAnswers = m.answers && Object.keys(m.answers).length > 0;
+    const answerParts = hasAnswers
+      ? Object.entries(m.answers).map(([pi, text]) => {
+          const colors = [['rgba(224,81,122,.1)','rgba(224,81,122,.3)','var(--a1)'],
+                          ['rgba(155,93,229,.1)','rgba(155,93,229,.3)','var(--a2)']];
+          const [bg, border, nameColor] = colors[pi] || colors[0];
+          return `<div style="margin-top:8px;background:${bg};border:1px solid ${border};
+            border-radius:12px;padding:10px 14px;font-size:13px;line-height:1.6">
+            <div style="font-size:10px;font-weight:700;color:${nameColor};margin-bottom:4px">${NAMES[pi]}:</div>
+            ${text}
+          </div>`;
+        }).join('')
+      : '';
     return `<div class="book-item">
       <div class="book-item-date">
         <span>${dateStr} • ${timeStr}</span>
@@ -1636,7 +1643,7 @@ function renderBook(moments) {
       </div>
       <div class="book-item-text">${m.text}</div>
       ${answerParts}
-      <div class="book-item-rxs" style="margin-top:${answerParts?'8':'0'}px">${rxParts}</div>
+      <div class="book-item-rxs" style="margin-top:${hasAnswers?'8':'0'}px">${rxParts}</div>
     </div>`;
   }).join('');
 }
