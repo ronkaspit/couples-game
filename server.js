@@ -550,6 +550,12 @@ io.on('connection', (socket) => {
     socket.emit('moments_update', { moments: GAME.savedMoments });
   });
 
+  socket.on('reset_book', () => {
+    GAME.savedMoments = [];
+    broadcast('moments_update', { moments: [] });
+    broadcast('toast', 'ספר הזוג אופס 📖');
+  });
+
   socket.on('reset_game', () => {
     GAME.stats = {
       points:           [0, 0],
