@@ -6,7 +6,7 @@ const os         = require('os');
 
 const app    = express();
 const server = http.createServer(app);
-const io     = new Server(server, { cors: { origin: '*' } });
+const io     = new Server(server, { cors: { origin: '*' }, maxHttpBufferSize: 5e6 });
 
 // No-cache headers so phones always get the latest version
 app.use((req, res, next) => {

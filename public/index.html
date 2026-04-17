@@ -1225,13 +1225,13 @@ function handlePhotoUpload(event) {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const max = 900;
+      const max = 600;
       let w = img.width, h = img.height;
       if (w > max) { h = h * max/w; w = max; }
       if (h > max) { w = w * max/h; h = max; }
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const photoData = canvas.toDataURL('image/jpeg', 0.75);
+      const photoData = canvas.toDataURL('image/jpeg', 0.6);
       socket.emit('upload_photo', { photoData });
       showPhotoReveal(photoData, NAMES[myPIdx], NAMES[1-myPIdx]);
     };
