@@ -1055,17 +1055,25 @@ socket.on('online_update', ({ online }) => {
 });
 
 socket.on('game_state', (state) => {
-  isPhotoMode = false;
   applyStats(state.stats);
-  applyGameState(state);
-  showGame();
+  if (state.card && state.card.isPhotoCard) {
+    isPhotoMode = true;
+    catMeta = state.catMeta;
+    setupPhotoRound(state.card);
+    setupGameHeader(catMeta, state.card.round, state.card.total);
+    showGame();
+  } else {
+    isPhotoMode = false;
+    applyGameState(state);
+    showGame();
+  }
 });
 
 socket.on('photo_mode_start', ({ state }) => {
   isPhotoMode = true;
   applyStats(state.stats);
   catMeta = state.catMeta;
-  setupPhotoRound(state.deck[state.cardIdx]);
+  setupPhotoRound(state.card);
   setupGameHeader(catMeta, 1, state.total);
   showGame();
 });
